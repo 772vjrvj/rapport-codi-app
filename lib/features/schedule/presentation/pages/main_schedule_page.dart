@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../widgets/main_app_drawer.dart';
 import '../widgets/schedule_type_sheet.dart';
+import 'schedule_case_detail_page.dart';
 
 class MainSchedulePage extends StatefulWidget {
   const MainSchedulePage({super.key});
@@ -301,7 +302,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 1, 12, 14),
       physics: const BouncingScrollPhysics(),
-      children: const [
+      children: [
         _ScheduleItem(
           '10:00',
           '10:40',
@@ -310,7 +311,25 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           '서유나',
           '언어재활사',
           '완료',
-          Color(0xFF55BFAE),
+          const Color(0xFF55BFAE),
+          onTap: () => _openScheduleDetail(
+            const ScheduleListDetailData(
+              kind: ScheduleDetailKind.treatment,
+              title: '김루아 · 언어치료',
+              teacherName: '서유나',
+              teacherRole: '언어재활사',
+              memberName: '김루아',
+              memberInfo: '여 / 2020-04-15 · (모) 010-1234-5678',
+              programName: '언어 · 언어치료',
+              programInfo: '개인, 기관',
+              dateText: '2026-08-19 (수)',
+              startTime: '10:00',
+              endTime: '10:40',
+              status: '완료',
+              repeatText: '수 · 1개월',
+              memo: '발음 및 표현언어 중심으로 진행했습니다.',
+            ),
+          ),
         ),
         _ScheduleItem(
           '11:00',
@@ -320,7 +339,24 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           '김유진',
           '작업치료사',
           '예정',
-          Color(0xFF6C99D9),
+          const Color(0xFF6C99D9),
+          onTap: () => _openScheduleDetail(
+            const ScheduleListDetailData(
+              kind: ScheduleDetailKind.treatment,
+              title: '박도윤 · 감각통합',
+              teacherName: '김유진',
+              teacherRole: '작업치료사',
+              memberName: '박도윤',
+              memberInfo: '남 / 2019-09-26 · (모) 010-5961-0500',
+              programName: '감각통합 · 감각통합',
+              programInfo: '개인',
+              dateText: '2026-08-19 (수)',
+              startTime: '11:00',
+              endTime: '11:50',
+              status: '예정',
+              repeatText: '반복 없음',
+            ),
+          ),
         ),
         _ScheduleItem(
           '13:30',
@@ -330,7 +366,25 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           '최민정',
           '상담사',
           '예정',
-          Color(0xFFE5A35D),
+          const Color(0xFFE5A35D),
+          onTap: () => _openScheduleDetail(
+            const ScheduleListDetailData(
+              kind: ScheduleDetailKind.consultation,
+              title: '이서아 · 초기상담',
+              teacherName: '최민정',
+              teacherRole: '상담사',
+              memberName: '이서아',
+              memberInfo: '여 / 2021-02-11',
+              programName: '초기상담',
+              programInfo: '상담',
+              dateText: '2026-08-19 (수)',
+              startTime: '13:30',
+              endTime: '14:10',
+              status: '예정',
+              quickInput: false,
+              memo: '보호자 초기 상담 및 발달 이력 확인 예정',
+            ),
+          ),
         ),
         _ScheduleItem(
           '15:00',
@@ -340,9 +394,55 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           '박병준',
           '대표님',
           '예정',
-          Color(0xFF9B83D7),
+          const Color(0xFF9B83D7),
+          onTap: () => _openScheduleDetail(
+            const ScheduleListDetailData(
+              kind: ScheduleDetailKind.other,
+              title: '센터회의',
+              teacherName: '박병준',
+              teacherRole: '대표님',
+              dateText: '2026-08-19 (수)',
+              startTime: '15:00',
+              endTime: '15:40',
+              status: '예정',
+              repeatText: '반복 없음',
+              centerShared: true,
+              memo: '주간 센터 운영 회의',
+            ),
+          ),
+        ),
+        _ScheduleItem(
+          '16:30',
+          '16:30',
+          '8월 센터 안내',
+          '공지',
+          '박병준',
+          '대표님',
+          '공지',
+          const Color(0xFFE96A77),
+          onTap: () => _openScheduleDetail(
+            const ScheduleListDetailData(
+              kind: ScheduleDetailKind.notice,
+              title: '8월 센터 운영 안내',
+              teacherName: '박병준',
+              teacherRole: '대표님',
+              dateText: '2026-08-19 (수)',
+              startTime: '16:30',
+              endTime: '16:30',
+              noticeContent:
+                  '8월 센터 운영 및 일정 관련 안내입니다.\n세부 내용은 추후 공지 API와 연결합니다.',
+            ),
+          ),
         ),
       ],
+    );
+  }
+
+  void _openScheduleDetail(ScheduleListDetailData data) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ScheduleCaseDetailPage(data: data),
+      ),
     );
   }
 
@@ -701,6 +801,7 @@ class _ScheduleItem extends StatelessWidget {
   final String teacherRole;
   final String status;
   final Color teacherColor;
+  final VoidCallback? onTap;
 
   const _ScheduleItem(
     this.startTime,
@@ -710,114 +811,135 @@ class _ScheduleItem extends StatelessWidget {
     this.teacherName,
     this.teacherRole,
     this.status,
-    this.teacherColor,
-  );
+    this.teacherColor, {
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 69,
-      margin: const EdgeInsets.only(bottom: 7),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(13),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 48,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  startTime,
-                  style: const TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.textStrong,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  endTime,
-                  style: const TextStyle(
-                    fontSize: 10.5,
-                    color: AppColors.textMuted,
-                  ),
-                ),
-              ],
-            ),
+        child: Container(
+          height: 69,
+          margin: const EdgeInsets.only(bottom: 7),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(13),
+            border: Border.all(color: AppColors.border),
           ),
-          Container(
-            width: 4,
-            height: 43,
-            margin: const EdgeInsets.only(right: 11),
-            decoration: BoxDecoration(
-              color: teacherColor,
-              borderRadius: BorderRadius.circular(99),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$memberName  $programName',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.textStrong,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
+          child: Row(
+            children: [
+              SizedBox(
+                width: 48,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Text(
-                        '$teacherName / $teacherRole',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textBody,
-                        ),
+                    Text(
+                      startTime,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textStrong,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: status == '완료'
-                            ? const Color(0xFFEAF7F0)
-                            : AppColors.primary50,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        status,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                          color: status == '완료'
-                              ? const Color(0xFF438267)
-                              : AppColors.primaryDark,
-                        ),
+                    const SizedBox(height: 3),
+                    Text(
+                      endTime,
+                      style: const TextStyle(
+                        fontSize: 10.5,
+                        color: AppColors.textMuted,
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Container(
+                width: 4,
+                height: 43,
+                margin: const EdgeInsets.only(right: 11),
+                decoration: BoxDecoration(
+                  color: teacherColor,
+                  borderRadius: BorderRadius.circular(99),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '$memberName  $programName',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textStrong,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '$teacherName / $teacherRole',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textBody,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 7,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: status == '완료'
+                                ? const Color(0xFFEAF7F0)
+                                : status == '공지'
+                                    ? const Color(0xFFFFEFF1)
+                                    : AppColors.primary50,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            status,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              color: status == '완료'
+                                  ? const Color(0xFF438267)
+                                  : status == '공지'
+                                      ? const Color(0xFFC84D5D)
+                                      : AppColors.primaryDark,
+                            ),
+                          ),
+                        ),
+                        if (onTap != null) ...[
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: AppColors.textMuted,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
