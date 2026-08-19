@@ -55,7 +55,7 @@ class MainAppDrawer extends StatelessWidget {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'rapport1',
+                              'rapportTest',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: AppColors.textMuted,
