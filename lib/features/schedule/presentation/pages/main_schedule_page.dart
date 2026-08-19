@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
 import '../widgets/main_app_drawer.dart';
+import '../widgets/schedule_type_sheet.dart';
 
 class MainSchedulePage extends StatefulWidget {
   const MainSchedulePage({super.key});
@@ -378,7 +379,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             width: 44,
             height: 44,
             child: FilledButton(
-              onPressed: () {},
+              onPressed: () => openScheduleTypeSheet(context),
               style: FilledButton.styleFrom(
                 padding: EdgeInsets.zero,
                 elevation: 0,
