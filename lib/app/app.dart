@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../features/schedule/presentation/pages/main_schedule_page.dart';
+import '../features/auth/presentation/pages/splash_page.dart';
 import 'theme/app_theme.dart';
 
 class RapportCodiApp extends StatelessWidget {
@@ -12,7 +12,7 @@ class RapportCodiApp extends StatelessWidget {
       title: 'Rapport Codi',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.build(),
-      home: const MainSchedulePage(),
+      home: const SplashPage(),
     );
   }
 }
