@@ -126,7 +126,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             radius: 31,
             backgroundColor: AppColors.primary100,
             child: Icon(
-              _member.gender == '여' ? Icons.girl_rounded : Icons.boy_rounded,
+              Icons.person_outline_rounded,
               color: AppColors.primaryDark,
               size: 34,
             ),

@@ -120,7 +120,6 @@ class _MainSchedulePageState extends State<MainSchedulePage>
   Widget _calendar() {
     // 달력 셀은 선택한 연/월을 기준으로 매번 계산합니다.
     final firstDay = DateTime(year, month, 1);
-    final daysInMonth = DateUtils.getDaysInMonth(year, month);
     final firstWeekdayIndex = firstDay.weekday % 7; // 일요일을 0으로 맞춤
 
     const scheduleDays = <int>{
@@ -129,7 +128,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
 
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.fromLTRB(14, 8, 14, 7),
+      padding: const EdgeInsets.fromLTRB(14, 5, 14, 4),
       child: Column(
         children: [
           const Row(
@@ -143,35 +142,48 @@ class _MainSchedulePageState extends State<MainSchedulePage>
               _Weekday('토', AppColors.primaryDark),
             ],
           ),
-          const SizedBox(height: 5),
-          SizedBox(
-            height: 218,
+          const SizedBox(height: 3),
+          AspectRatio(
+            // 7열 × 6행이 정확히 보이도록 달력 높이를 화면 너비에 맞춥니다.
+            aspectRatio: 7 * 1.53 / 6,
             child: GridView.builder(
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 42,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
-                childAspectRatio: 1.23,
+                childAspectRatio: 1.53,
               ),
               itemBuilder: (context, index) {
-                final day = index - firstWeekdayIndex + 1;
-                if (day < 1 || day > daysInMonth) {
-                  return const SizedBox.shrink();
-                }
+                // 항상 42칸(6주)을 채웁니다.
+                // 현재 달 앞/뒤 날짜도 같이 보여주되 회색으로 구분합니다.
+                final cellDate = DateTime(
+                  year,
+                  month,
+                  index - firstWeekdayIndex + 1,
+                );
+                final day = cellDate.day;
+                final isCurrentMonth =
+                    cellDate.year == year && cellDate.month == month;
+                final selected = isCurrentMonth && day == selectedDay;
 
-                final selected = day == selectedDay;
-
-                Color textColor = AppColors.textBody;
-                if (index % 7 == 0) {
+                Color textColor;
+                if (!isCurrentMonth) {
+                  textColor = AppColors.textMuted.withValues(alpha: 0.45);
+                } else if (index % 7 == 0) {
                   textColor = const Color(0xFFE16B75);
                 } else if (index % 7 == 6) {
                   textColor = AppColors.primaryDark;
+                } else {
+                  textColor = AppColors.textBody;
                 }
 
                 return InkWell(
                   borderRadius: BorderRadius.circular(99),
-                  onTap: () => setState(() => selectedDay = day),
+                  onTap: () {
+                    if (!isCurrentMonth) return;
+                    setState(() => selectedDay = day);
+                  },
                   child: Center(
                     child: Stack(
                       alignment: Alignment.center,
@@ -179,8 +191,8 @@ class _MainSchedulePageState extends State<MainSchedulePage>
                       children: [
                         if (selected)
                           const SizedBox(
-                            width: 33,
-                            height: 33,
+                            width: 29,
+                            height: 29,
                             child: DecoratedBox(
                               decoration: BoxDecoration(
                                 color: AppColors.primary,
@@ -191,13 +203,15 @@ class _MainSchedulePageState extends State<MainSchedulePage>
                         Text(
                           '$day',
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: 12.5,
                             fontWeight:
-                                selected ? FontWeight.w900 : FontWeight.w700,
+                            selected ? FontWeight.w900 : FontWeight.w700,
                             color: selected ? Colors.white : textColor,
                           ),
                         ),
-                        if (scheduleDays.contains(day) && !selected)
+                        if (isCurrentMonth &&
+                            scheduleDays.contains(day) &&
+                            !selected)
                           const Positioned(
                             bottom: -6,
                             child: SizedBox(
@@ -227,14 +241,13 @@ class _MainSchedulePageState extends State<MainSchedulePage>
     return AnimatedContainer(
       duration: const Duration(milliseconds: 260),
       curve: Curves.easeInOutCubic,
-      margin: const EdgeInsets.fromLTRB(10, 7, 10, 7),
-      height: 48,
-      padding: const EdgeInsets.only(left: 12, right: 5),
+      height: 44,
+      padding: const EdgeInsets.only(left: 12, right: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColors.primary200.withValues(alpha: 0.85),
+        color: AppColors.primary50.withValues(alpha: 0.78),
+        border: const Border(
+          top: BorderSide(color: AppColors.primary200),
+          bottom: BorderSide(color: AppColors.primary200),
         ),
       ),
       child: Row(
@@ -242,7 +255,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           Text(
             AppDateTime.date(DateTime(year, month, selectedDay)),
             style: const TextStyle(
-              fontSize: 11.5,
+              fontSize: 13.5,
               fontWeight: FontWeight.w900,
               color: AppColors.textStrong,
             ),
@@ -283,8 +296,8 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           ),
           const SizedBox(width: 3),
           SizedBox(
-            width: 36,
-            height: 36,
+            width: 32,
+            height: 32,
             child: IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {
@@ -305,7 +318,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
                 curve: Curves.easeInOut,
                 child: const Icon(
                   Icons.keyboard_arrow_up_rounded,
-                  size: 22,
+                  size: 20,
                 ),
               ),
             ),
@@ -317,7 +330,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
 
   Widget _scheduleList() {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(12, 1, 12, 14),
+      padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
       physics: const BouncingScrollPhysics(),
       children: [
         if (_showSchedule(
@@ -328,33 +341,33 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           status: '완료',
         ))
           _ScheduleItem(
-          '10:00',
-          '10:40',
-          '김루아',
-          '언어치료',
-          '서유나',
-          '언어재활사',
-          '완료',
-          const Color(0xFF55BFAE),
-          onTap: () => _openScheduleDetail(
-            const ScheduleListDetailData(
-              kind: ScheduleDetailKind.treatment,
-              title: '김루아 · 언어치료',
-              teacherName: '서유나',
-              teacherRole: '언어재활사',
-              memberName: '김루아',
-              memberInfo: '여 / 2020-04-15 · (모) 010-1234-5678',
-              programName: '언어 · 언어치료',
-              programInfo: '개인, 기관',
-              dateText: '2026-08-19 (수)',
-              startTime: '10:00',
-              endTime: '10:40',
-              status: '완료',
-              repeatText: '수 · 1개월',
-              memo: '발음 및 표현언어 중심으로 진행했습니다.',
+            '10:00',
+            '10:40',
+            '김루아',
+            '언어치료',
+            '서유나',
+            '언어재활사',
+            '완료',
+            const Color(0xFF55BFAE),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.treatment,
+                title: '김루아 · 언어치료',
+                teacherName: '서유나',
+                teacherRole: '언어재활사',
+                memberName: '김루아',
+                memberInfo: '여 / 2020-04-15 · (모) 010-1234-5678',
+                programName: '언어 · 언어치료',
+                programInfo: '개인, 기관',
+                dateText: '2026-08-19 (수)',
+                startTime: '10:00',
+                endTime: '10:40',
+                status: '완료',
+                repeatText: '수 · 1개월',
+                memo: '발음 및 표현언어 중심으로 진행했습니다.',
+              ),
             ),
           ),
-        ),
         if (_showSchedule(
           kind: ScheduleDetailKind.treatment,
           teacherName: '김유진',
@@ -363,32 +376,32 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           status: '예정',
         ))
           _ScheduleItem(
-          '11:00',
-          '11:50',
-          '박도윤',
-          '감각통합',
-          '김유진',
-          '작업치료사',
-          '예정',
-          const Color(0xFF6C99D9),
-          onTap: () => _openScheduleDetail(
-            const ScheduleListDetailData(
-              kind: ScheduleDetailKind.treatment,
-              title: '박도윤 · 감각통합',
-              teacherName: '김유진',
-              teacherRole: '작업치료사',
-              memberName: '박도윤',
-              memberInfo: '남 / 2019-09-26 · (모) 010-5961-0500',
-              programName: '감각통합 · 감각통합',
-              programInfo: '개인',
-              dateText: '2026-08-19 (수)',
-              startTime: '11:00',
-              endTime: '11:50',
-              status: '예정',
-              repeatText: '반복 없음',
+            '11:00',
+            '11:50',
+            '박도윤',
+            '감각통합',
+            '김유진',
+            '작업치료사',
+            '예정',
+            const Color(0xFF6C99D9),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.treatment,
+                title: '박도윤 · 감각통합',
+                teacherName: '김유진',
+                teacherRole: '작업치료사',
+                memberName: '박도윤',
+                memberInfo: '남 / 2019-09-26 · (모) 010-5961-0500',
+                programName: '감각통합 · 감각통합',
+                programInfo: '개인',
+                dateText: '2026-08-19 (수)',
+                startTime: '11:00',
+                endTime: '11:50',
+                status: '예정',
+                repeatText: '반복 없음',
+              ),
             ),
           ),
-        ),
         if (_showSchedule(
           kind: ScheduleDetailKind.consultation,
           teacherName: '최민정',
@@ -397,33 +410,33 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           status: '예정',
         ))
           _ScheduleItem(
-          '13:30',
-          '14:10',
-          '이서아',
-          '상담/평가',
-          '최민정',
-          '상담사',
-          '예정',
-          const Color(0xFFE5A35D),
-          onTap: () => _openScheduleDetail(
-            const ScheduleListDetailData(
-              kind: ScheduleDetailKind.consultation,
-              title: '이서아 · 초기상담',
-              teacherName: '최민정',
-              teacherRole: '상담사',
-              memberName: '이서아',
-              memberInfo: '여 / 2021-02-11',
-              programName: '초기상담',
-              programInfo: '상담',
-              dateText: '2026-08-19 (수)',
-              startTime: '13:30',
-              endTime: '14:10',
-              status: '예정',
-              quickInput: false,
-              memo: '보호자 초기 상담 및 발달 이력 확인 예정',
+            '13:30',
+            '14:10',
+            '이서아',
+            '상담/평가',
+            '최민정',
+            '상담사',
+            '예정',
+            const Color(0xFFE5A35D),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.consultation,
+                title: '이서아 · 초기상담',
+                teacherName: '최민정',
+                teacherRole: '상담사',
+                memberName: '이서아',
+                memberInfo: '여 / 2021-02-11',
+                programName: '초기상담',
+                programInfo: '상담',
+                dateText: '2026-08-19 (수)',
+                startTime: '13:30',
+                endTime: '14:10',
+                status: '예정',
+                quickInput: false,
+                memo: '보호자 초기 상담 및 발달 이력 확인 예정',
+              ),
             ),
           ),
-        ),
         if (_showSchedule(
           kind: ScheduleDetailKind.other,
           teacherName: '박병준',
@@ -433,30 +446,236 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           centerShared: true,
         ))
           _ScheduleItem(
-          '15:00',
-          '15:40',
-          '센터회의',
-          '기타',
-          '박병준',
-          '대표님',
-          '예정',
-          const Color(0xFF9B83D7),
-          onTap: () => _openScheduleDetail(
-            const ScheduleListDetailData(
-              kind: ScheduleDetailKind.other,
-              title: '센터회의',
-              teacherName: '박병준',
-              teacherRole: '대표님',
-              dateText: '2026-08-19 (수)',
-              startTime: '15:00',
-              endTime: '15:40',
-              status: '예정',
-              repeatText: '반복 없음',
-              centerShared: true,
-              memo: '주간 센터 운영 회의',
+            '15:00',
+            '15:40',
+            '센터회의',
+            '기타',
+            '박병준',
+            '대표님',
+            '예정',
+            const Color(0xFF9B83D7),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.other,
+                title: '센터회의',
+                teacherName: '박병준',
+                teacherRole: '대표님',
+                dateText: '2026-08-19 (수)',
+                startTime: '15:00',
+                endTime: '15:40',
+                status: '예정',
+                repeatText: '반복 없음',
+                centerShared: true,
+                memo: '주간 센터 운영 회의',
+              ),
             ),
           ),
-        ),
+        if (_showSchedule(
+          kind: ScheduleDetailKind.treatment,
+          teacherName: '서유나',
+          memberName: '강도현',
+          programName: '언어치료',
+          status: '완료',
+        ))
+          _ScheduleItem(
+            '09:00',
+            '09:40',
+            '강도현',
+            '언어치료',
+            '서유나',
+            '언어재활사',
+            '완료',
+            const Color(0xFF55BFAE),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.treatment,
+                title: '강도현 · 언어치료',
+                teacherName: '서유나',
+                teacherRole: '언어재활사',
+                memberName: '강도현',
+                memberInfo: '남 / 2022-07-20 · (모) 010-5788-8545',
+                programName: '언어 · 언어치료',
+                programInfo: '개인',
+                dateText: '2026-08-19 (수)',
+                startTime: '09:00',
+                endTime: '09:40',
+                status: '완료',
+                repeatText: '수 · 1개월',
+                memo: '표현언어 및 발음 중심 치료',
+              ),
+            ),
+          ),
+        if (_showSchedule(
+          kind: ScheduleDetailKind.treatment,
+          teacherName: '김유진',
+          memberName: '강시후',
+          programName: '감각통합',
+          status: '완료',
+        ))
+          _ScheduleItem(
+            '09:50',
+            '10:40',
+            '강시후',
+            '감각통합',
+            '김유진',
+            '작업치료사',
+            '완료',
+            const Color(0xFF6C99D9),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.treatment,
+                title: '강시후 · 감각통합',
+                teacherName: '김유진',
+                teacherRole: '작업치료사',
+                memberName: '강시후',
+                memberInfo: '남 / 2020-09-29',
+                programName: '감각통합',
+                programInfo: '개인',
+                dateText: '2026-08-19 (수)',
+                startTime: '09:50',
+                endTime: '10:40',
+                status: '완료',
+                repeatText: '반복 없음',
+              ),
+            ),
+          ),
+        if (_showSchedule(
+          kind: ScheduleDetailKind.consultation,
+          teacherName: '최민정',
+          memberName: '강지민',
+          programName: '초기상담',
+          status: '완료',
+        ))
+          _ScheduleItem(
+            '10:50',
+            '11:30',
+            '강지민',
+            '상담/평가',
+            '최민정',
+            '상담사',
+            '완료',
+            const Color(0xFFE5A35D),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.consultation,
+                title: '강지민 · 초기상담',
+                teacherName: '최민정',
+                teacherRole: '상담사',
+                memberName: '강지민',
+                memberInfo: '남 / 2021-08-17',
+                programName: '초기상담',
+                programInfo: '상담',
+                dateText: '2026-08-19 (수)',
+                startTime: '10:50',
+                endTime: '11:30',
+                status: '완료',
+                repeatText: '반복 없음',
+                memo: '초기상담 완료',
+              ),
+            ),
+          ),
+        if (_showSchedule(
+          kind: ScheduleDetailKind.treatment,
+          teacherName: '서유나',
+          memberName: '공도현',
+          programName: '언어치료',
+          status: '예정',
+        ))
+          _ScheduleItem(
+            '12:00',
+            '12:40',
+            '공도현',
+            '언어치료',
+            '서유나',
+            '언어재활사',
+            '예정',
+            const Color(0xFF55BFAE),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.treatment,
+                title: '공도현 · 언어치료',
+                teacherName: '서유나',
+                teacherRole: '언어재활사',
+                memberName: '공도현',
+                memberInfo: '남 / 2020-08-12',
+                programName: '언어 · 언어치료',
+                programInfo: '개인',
+                dateText: '2026-08-19 (수)',
+                startTime: '12:00',
+                endTime: '12:40',
+                status: '예정',
+                repeatText: '반복 없음',
+              ),
+            ),
+          ),
+        if (_showSchedule(
+          kind: ScheduleDetailKind.other,
+          teacherName: '박병준',
+          memberName: '',
+          programName: '기타',
+          status: '예정',
+          centerShared: true,
+        ))
+          _ScheduleItem(
+            '14:20',
+            '14:50',
+            '직원 미팅',
+            '기타',
+            '박병준',
+            '대표님',
+            '예정',
+            const Color(0xFF9B83D7),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.other,
+                title: '직원 미팅',
+                teacherName: '박병준',
+                teacherRole: '대표님',
+                dateText: '2026-08-19 (수)',
+                startTime: '14:20',
+                endTime: '14:50',
+                status: '예정',
+                repeatText: '반복 없음',
+                centerShared: true,
+                memo: '센터 운영 관련 간단 미팅',
+              ),
+            ),
+          ),
+        if (_showSchedule(
+          kind: ScheduleDetailKind.treatment,
+          teacherName: '김유진',
+          memberName: '곽로빈',
+          programName: '작업치료',
+          status: '예정',
+        ))
+          _ScheduleItem(
+            '17:00',
+            '17:50',
+            '곽로빈',
+            '작업치료',
+            '김유진',
+            '작업치료사',
+            '예정',
+            const Color(0xFF6C99D9),
+            onTap: () => _openScheduleDetail(
+              const ScheduleListDetailData(
+                kind: ScheduleDetailKind.treatment,
+                title: '곽로빈 · 작업치료',
+                teacherName: '김유진',
+                teacherRole: '작업치료사',
+                memberName: '곽로빈',
+                memberInfo: '남 / 2020-10-08',
+                programName: '작업치료',
+                programInfo: '개인',
+                dateText: '2026-08-19 (수)',
+                startTime: '17:00',
+                endTime: '17:50',
+                status: '예정',
+                repeatText: '반복 없음',
+              ),
+            ),
+          ),
+
         _ScheduleItem(
           '16:30',
           '16:30',
@@ -476,7 +695,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
               startTime: '16:30',
               endTime: '16:30',
               noticeContent:
-                  '8월 센터 운영 및 일정 관련 안내입니다.\n세부 내용은 추후 공지 API와 연결합니다.',
+              '8월 센터 운영 및 일정 관련 안내입니다.\n세부 내용은 추후 공지 API와 연결합니다.',
             ),
           ),
         ),
@@ -515,11 +734,11 @@ class _MainSchedulePageState extends State<MainSchedulePage>
     final searchKind = centerShared
         ? ScheduleSearchKind.centerShared
         : switch (kind) {
-            ScheduleDetailKind.treatment => ScheduleSearchKind.treatment,
-            ScheduleDetailKind.consultation => ScheduleSearchKind.consultation,
-            ScheduleDetailKind.other => ScheduleSearchKind.other,
-            ScheduleDetailKind.notice => null,
-          };
+      ScheduleDetailKind.treatment => ScheduleSearchKind.treatment,
+      ScheduleDetailKind.consultation => ScheduleSearchKind.consultation,
+      ScheduleDetailKind.other => ScheduleSearchKind.other,
+      ScheduleDetailKind.notice => null,
+    };
 
     return searchKind == null || scheduleFilter.kinds.contains(searchKind);
   }
@@ -534,7 +753,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
 
   Widget _bottomBar() {
     return Container(
-      height: 60,
+      height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -551,19 +770,19 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             style: TextButton.styleFrom(
               foregroundColor: AppColors.primaryDark,
             ),
-            icon: const Icon(Icons.today_outlined, size: 19),
+            icon: const Icon(Icons.today_outlined, size: 17),
             label: const Text(
               '오늘',
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: FontWeight.w900,
               ),
             ),
           ),
           const Spacer(),
           SizedBox(
-            width: 44,
-            height: 44,
+            width: 38,
+            height: 38,
             child: FilledButton(
               onPressed: () => openScheduleTypeSheet(context),
               style: FilledButton.styleFrom(
@@ -571,7 +790,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
                 elevation: 0,
                 backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(11),
                 ),
               ),
               child: const Icon(Icons.add_rounded),
@@ -889,22 +1108,31 @@ class _StatBadge extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(7),
-        border: Border.all(color: border),
-      ),
-      child: Text(
-        '$label $count',
-        maxLines: 1,
-        style: TextStyle(
-          fontSize: 10,
-          height: 1,
-          fontWeight: FontWeight.w900,
-          color: foreground,
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 5,
+            height: 5,
+            decoration: BoxDecoration(
+              color: foreground,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            '$label $count',
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: 13.5,
+              height: 1,
+              fontWeight: FontWeight.w900,
+              color: foreground,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -922,140 +1150,142 @@ class _ScheduleItem extends StatelessWidget {
   final VoidCallback? onTap;
 
   const _ScheduleItem(
-    this.startTime,
-    this.endTime,
-    this.memberName,
-    this.programName,
-    this.teacherName,
-    this.teacherRole,
-    this.status,
-    this.teacherColor, {
-    this.onTap,
-  });
+      this.startTime,
+      this.endTime,
+      this.memberName,
+      this.programName,
+      this.teacherName,
+      this.teacherRole,
+      this.status,
+      this.teacherColor, {
+        this.onTap,
+      });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(13),
-      child: InkWell(
-        onTap: onTap,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Material(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(13),
-        child: Container(
-          height: 69,
-          margin: const EdgeInsets.only(bottom: 7),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(13),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 48,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      startTime,
-                      style: const TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textStrong,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(13),
+          child: Container(
+            height: 58,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 48,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        startTime,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.textStrong,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      endTime,
-                      style: const TextStyle(
-                        fontSize: 10.5,
-                        color: AppColors.textMuted,
+                      const SizedBox(height: 3),
+                      Text(
+                        endTime,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: AppColors.textMuted,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                width: 4,
-                height: 43,
-                margin: const EdgeInsets.only(right: 11),
-                decoration: BoxDecoration(
-                  color: teacherColor,
-                  borderRadius: BorderRadius.circular(99),
+                Container(
+                  width: 4,
+                  height: 36,
+                  margin: const EdgeInsets.only(right: 11),
+                  decoration: BoxDecoration(
+                    color: teacherColor,
+                    borderRadius: BorderRadius.circular(99),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$memberName  $programName',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textStrong,
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$memberName  $programName',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.textStrong,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '$teacherName / $teacherRole',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textBody,
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '$teacherName / $teacherRole',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textBody,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: status == '완료'
-                                ? const Color(0xFFEAF7F0)
-                                : status == '공지'
-                                    ? const Color(0xFFFFEFF1)
-                                    : AppColors.primary50,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            status,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w900,
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
                               color: status == '완료'
-                                  ? const Color(0xFF438267)
+                                  ? const Color(0xFFEAF7F0)
                                   : status == '공지'
-                                      ? const Color(0xFFC84D5D)
-                                      : AppColors.primaryDark,
+                                  ? const Color(0xFFFFEFF1)
+                                  : AppColors.primary50,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              status,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w900,
+                                color: status == '완료'
+                                    ? const Color(0xFF438267)
+                                    : status == '공지'
+                                    ? const Color(0xFFC84D5D)
+                                    : AppColors.primaryDark,
+                              ),
                             ),
                           ),
-                        ),
-                        if (onTap != null) ...[
-                          const SizedBox(width: 4),
-                          const Icon(
-                            Icons.chevron_right_rounded,
-                            size: 18,
-                            color: AppColors.textMuted,
-                          ),
+                          if (onTap != null) ...[
+                            const SizedBox(width: 4),
+                            const Icon(
+                              Icons.chevron_right_rounded,
+                              size: 18,
+                              color: AppColors.textMuted,
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

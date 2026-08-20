@@ -40,7 +40,7 @@ class MainAppDrawer extends StatelessWidget {
                   _item(context, AppMenu.schedule, Icons.calendar_month_outlined, '일정'),
                   _item(context, AppMenu.treatmentRecords, Icons.description_outlined, '치료기록 관리'),
                   _item(context, AppMenu.consultationRecords, Icons.chat_bubble_outline, '상담/평가기록 관리'),
-                  _item(context, AppMenu.members, Icons.child_care_outlined, '이용자 관리'),
+                  _item(context, AppMenu.members, Icons.account_circle_outlined, '이용자 관리'),
                   _item(context, AppMenu.notices, Icons.campaign_outlined, '공지사항'),
                   _item(context, AppMenu.support, Icons.support_agent_outlined, '서비스 지원'),
                 ],

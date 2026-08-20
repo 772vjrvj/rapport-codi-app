@@ -154,7 +154,7 @@ class _MemberListPageState extends State<MemberListPage> {
                     ? const Color(0xFFFFF2ED)
                     : AppColors.primary50,
                 child: Icon(
-                  member.gender == '여' ? Icons.girl_rounded : Icons.boy_rounded,
+                  Icons.person_outline_rounded,
                   color: member.status == '종결'
                       ? const Color(0xFFC96B45)
                       : AppColors.primaryDark,
