@@ -17,12 +17,25 @@ class TreatmentRecordListPage extends StatefulWidget {
 }
 
 class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
-  final searchController = TextEditingController();
-  String query = '';
-  String selectedTeacher = '전체 선생님';
+  // TODO(AUTH): 로그인 API 연결 후 로그인 사용자 정보로 교체합니다.
+  String selectedTeacherName = '박병준';
+  String selectedTeacherRole = '대표님';
+  String? selectedMemberName;
 
   // TODO(API): 추후 Repository에서 받아오는 데이터로 교체합니다.
   final records = <TreatmentRecordHistoryUi>[
+    TreatmentRecordHistoryUi(
+      id: 'TR-LOGIN-001',
+      startAt: DateTime(2026, 8, 20, 16, 40),
+      endAt: DateTime(2026, 8, 20, 17, 20),
+      memberName: '김윤택',
+      programName: '영유아검진',
+      teacherName: '박병준',
+      teacherRole: '대표님',
+      status: '완료',
+      summary: '로그인 사용자 기준 치료기록 샘플입니다.',
+      recordContent: '추후 실제 API 응답 데이터로 교체합니다.',
+    ),
     TreatmentRecordHistoryUi(
       id: 'TR-001',
       startAt: DateTime(2026, 8, 20, 10, 0),
@@ -62,23 +75,13 @@ class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
     ),
   ];
 
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
 
   List<TreatmentRecordHistoryUi> get filteredRecords {
-    final q = query.trim().toLowerCase();
     return records.where((record) {
-      final matchesTeacher = selectedTeacher == '전체 선생님' ||
-          record.teacherName == selectedTeacher;
-      if (!matchesTeacher) return false;
-      if (q.isEmpty) return true;
-      return record.memberName.toLowerCase().contains(q) ||
-          record.programName.toLowerCase().contains(q) ||
-          record.teacherName.toLowerCase().contains(q) ||
-          record.summary.toLowerCase().contains(q);
+      final matchesTeacher = record.teacherName == selectedTeacherName;
+      final matchesMember = selectedMemberName == null ||
+          record.memberName == selectedMemberName;
+      return matchesTeacher && matchesMember;
     }).toList();
   }
 
@@ -105,15 +108,7 @@ class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
       body: Column(
         children: [
           RecordFilterHeader(
-            controller: searchController,
-            hintText: '이용자, 프로그램, 선생님 검색',
-            selectedTeacher: selectedTeacher,
-            onChanged: (value) => setState(() => query = value),
-            onMemberSearchTap: _selectMember,
-            onClear: () {
-              searchController.clear();
-              setState(() => query = '');
-            },
+            selectedTeacher: '$selectedTeacherName / $selectedTeacherRole',
             onTeacherTap: _selectTeacher,
           ),
           Expanded(
@@ -166,7 +161,7 @@ class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
     );
   }
 
-  /// 이용자 선택 화면에서 선택한 이름으로 기록 목록을 필터링합니다.
+  /// 상단 돋보기에서 이용자를 선택하면 해당 이용자의 기록만 보여줍니다.
   Future<void> _selectMember() async {
     final result = await Navigator.of(context).push<MemberUi>(
       MaterialPageRoute(
@@ -176,19 +171,15 @@ class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
 
     if (result == null || !mounted) return;
 
-    searchController.text = result.name;
-    setState(() => query = result.name);
+    setState(() => selectedMemberName = result.name);
   }
 
-  /// 아래에서 올라오는 BottomSheet 대신 기존 선생님 선택 화면을 사용합니다.
+  /// 기존 선생님 선택 화면을 그대로 사용합니다.
   Future<void> _selectTeacher() async {
     final result = await Navigator.of(context).push<TeacherUi>(
       MaterialPageRoute(
         builder: (_) => TeacherSelectPage(
-          selectedName: selectedTeacher == '전체 선생님'
-              ? null
-              : selectedTeacher,
-          allowAll: true,
+          selectedName: selectedTeacherName,
         ),
       ),
     );
@@ -196,9 +187,8 @@ class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
     if (result == null || !mounted) return;
 
     setState(() {
-      selectedTeacher = result.id == '__ALL__'
-          ? '전체 선생님'
-          : result.name;
+      selectedTeacherName = result.name;
+      selectedTeacherRole = result.role;
     });
   }
 

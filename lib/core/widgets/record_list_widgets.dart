@@ -3,27 +3,16 @@ import 'package:flutter/material.dart';
 import '../../app/theme/app_theme.dart';
 import '../utils/date_time_utils.dart';
 
-/// 치료기록/상담기록 목록이 공통으로 사용하는 검색 + 선생님 필터 영역입니다.
+/// 치료기록/상담기록 목록이 공통으로 사용하는 선생님 필터 영역입니다.
+/// 이용자 찾기는 각 화면 AppBar의 돋보기에서만 실행합니다.
 class RecordFilterHeader extends StatelessWidget {
-  final TextEditingController controller;
-  final String hintText;
   final String selectedTeacher;
-  final ValueChanged<String> onChanged;
-  final VoidCallback onMemberSearchTap;
   final VoidCallback onTeacherTap;
-  final VoidCallback onClear;
-  final Color searchBackground;
 
   const RecordFilterHeader({
     super.key,
-    required this.controller,
-    required this.hintText,
     required this.selectedTeacher,
-    required this.onChanged,
-    required this.onMemberSearchTap,
     required this.onTeacherTap,
-    required this.onClear,
-    this.searchBackground = AppColors.primary50,
   });
 
   @override
@@ -31,81 +20,50 @@ class RecordFilterHeader extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 11),
-      child: Column(
-        children: [
-          TextField(
-            controller: controller,
-            onChanged: onChanged,
-            decoration: InputDecoration(
-              hintText: hintText,
-              // 돋보기는 기록 텍스트 검색이 아니라 이용자 선택 화면을 엽니다.
-              prefixIcon: IconButton(
-                tooltip: '이용자 찾기',
-                onPressed: onMemberSearchTap,
-                icon: const Icon(Icons.search_rounded),
-              ),
-              suffixIcon: controller.text.isEmpty
-                  ? null
-                  : IconButton(
-                      onPressed: onClear,
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-              filled: true,
-              fillColor: searchBackground.withValues(alpha: 0.55),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 9),
-          InkWell(
-            onTap: onTeacherTap,
+      child: InkWell(
+        onTap: onTeacherTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 46,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            child: Container(
-              height: 43,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.person_outline_rounded,
-                    size: 19,
-                    color: AppColors.primaryDark,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      selectedTeacher,
-                      style: const TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textStrong,
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    '선생님 변경',
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.primaryDark,
-                    ),
-                  ),
-                  const Icon(
-                    Icons.chevron_right_rounded,
-                    size: 18,
-                    color: AppColors.textMuted,
-                  ),
-                ],
-              ),
-            ),
+            border: Border.all(color: AppColors.border),
           ),
-        ],
+          child: Row(
+            children: [
+              const Icon(
+                Icons.person_outline_rounded,
+                size: 19,
+                color: AppColors.primaryDark,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  selectedTeacher,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textStrong,
+                  ),
+                ),
+              ),
+              const Text(
+                '선생님 변경',
+                style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primaryDark,
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right_rounded,
+                size: 18,
+                color: AppColors.textMuted,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

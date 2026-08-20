@@ -5,19 +5,12 @@ import '../models/schedule_ui_models.dart';
 
 class TeacherSelectPage extends StatefulWidget {
   final TeacherUi? selected;
-
-  // 기록 관리 화면에서는 현재 선택된 선생님 이름만 알고 있어도
-  // 선택 표시를 할 수 있도록 별도 값으로 받을 수 있습니다.
   final String? selectedName;
-
-  // 기록 관리 필터에서 '전체 선생님'으로 되돌릴 때 사용합니다.
-  final bool allowAll;
 
   const TeacherSelectPage({
     super.key,
     this.selected,
     this.selectedName,
-    this.allowAll = false,
   });
 
   @override
@@ -28,6 +21,10 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
   final _searchController = TextEditingController();
   String query = '';
 
+  // 기본은 퇴사자를 숨깁니다.
+  bool hideRetired = true;
+
+  // TODO(API): 추후 서버에서 받은 선생님 목록으로 교체합니다.
   static const teachers = [
     TeacherUi(
       id: 'T01',
@@ -52,6 +49,7 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
       name: '박은지',
       role: '감통치료사(월)',
       color: Color(0xFFF7CDE4),
+      retired: true,
     ),
     TeacherUi(
       id: 'T05',
@@ -83,9 +81,6 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
       role: '센터장님',
       color: Color(0xFFB7C7CF),
     ),
-
-    // 기록 관리 화면의 샘플 데이터와 연결 확인용 선생님입니다.
-    // TODO(API): 실제 API 연결 후 서버 응답으로 교체합니다.
     TeacherUi(
       id: 'T10',
       name: '한가람',
@@ -114,9 +109,16 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedName = widget.selected?.name ??
+        widget.selectedName ??
+        '박병준'; // TODO(AUTH): 로그인 사용자 이름으로 교체
+
     final filtered = teachers.where((teacher) {
+      if (hideRetired && teacher.retired) return false;
+
       final q = query.trim().toLowerCase();
       if (q.isEmpty) return true;
+
       return teacher.name.toLowerCase().contains(q) ||
           teacher.role.toLowerCase().contains(q);
     }).toList();
@@ -127,29 +129,11 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
           '선생님 선택',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
-        actions: [
-          if (widget.allowAll)
-            TextButton(
-              onPressed: () => Navigator.pop(
-                context,
-                const TeacherUi(
-                  id: '__ALL__',
-                  name: '전체 선생님',
-                  role: '',
-                  color: Colors.transparent,
-                ),
-              ),
-              child: const Text(
-                '전체',
-                style: TextStyle(fontWeight: FontWeight.w900),
-              ),
-            ),
-        ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
             child: TextField(
               controller: _searchController,
               onChanged: (value) => setState(() => query = value),
@@ -169,6 +153,32 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
               ),
             ),
           ),
+
+          // As-Is 화면에 있던 퇴사자 감추기 옵션입니다.
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+            padding: const EdgeInsets.only(left: 14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text(
+                '퇴사자 감추기',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textStrong,
+                ),
+              ),
+              value: hideRetired,
+              activeThumbColor: AppColors.primary,
+              onChanged: (value) => setState(() => hideRetired = value),
+            ),
+          ),
+
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(12, 0, 12, 18),
@@ -176,11 +186,10 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
               separatorBuilder: (_, __) => const SizedBox(height: 7),
               itemBuilder: (context, index) {
                 final teacher = filtered[index];
-                final selected = widget.selected?.id == teacher.id ||
-                    widget.selectedName == teacher.name;
+                final selected = teacher.name == selectedName;
 
                 return Material(
-                  color: Colors.white,
+                  color: selected ? AppColors.primary50 : Colors.white,
                   borderRadius: BorderRadius.circular(14),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(14),
@@ -194,8 +203,9 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
                         borderRadius: BorderRadius.circular(14),
                         border: Border.all(
                           color: selected
-                              ? AppColors.primary200
+                              ? AppColors.primary
                               : AppColors.border,
+                          width: selected ? 1.4 : 1,
                         ),
                       ),
                       child: Row(
@@ -212,9 +222,11 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
                           Expanded(
                             child: Text(
                               teacher.displayName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: selected
+                                    ? FontWeight.w900
+                                    : FontWeight.w800,
                                 color: AppColors.textStrong,
                               ),
                             ),

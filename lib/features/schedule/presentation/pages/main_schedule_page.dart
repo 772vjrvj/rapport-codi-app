@@ -5,6 +5,7 @@ import '../../../../app/widgets/main_app_drawer.dart';
 import '../../../../core/utils/date_time_utils.dart';
 import '../models/schedule_detail_ui.dart';
 import '../widgets/schedule_type_sheet.dart';
+import 'notification_list_page.dart';
 import 'schedule_case_detail_page.dart';
 
 class MainSchedulePage extends StatefulWidget {
@@ -62,7 +63,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
         ),
         actions: [
           IconButton(
-            onPressed: () => _showComingSoon('알림'),
+            onPressed: _openNotifications,
             icon: const Badge(
               smallSize: 7,
               backgroundColor: Color(0xFFE96A77),
@@ -740,6 +741,14 @@ class _MainSchedulePageState extends State<MainSchedulePage>
       });
     }
   }
+  void _openNotifications() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const NotificationListPage(),
+      ),
+    );
+  }
+
 }
 
 class _Weekday extends StatelessWidget {
