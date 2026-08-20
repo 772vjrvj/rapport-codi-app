@@ -110,8 +110,8 @@ class _RepeatSettingPageState extends State<RepeatSettingPage> {
                         ),
                         const SizedBox(height: 12),
                         Row(
-                          children: List.generate(7, (index) {
-                            return [
+                          children: [
+                            for (var index = 0; index < weekdays.length; index++) ...[
                               ScheduleChoiceChip(
                                 label: weekdays[index],
                                 selected: selectedDays.contains(index),
@@ -125,9 +125,10 @@ class _RepeatSettingPageState extends State<RepeatSettingPage> {
                                   });
                                 },
                               ),
-                              if (index != 6) const SizedBox(width: 6),
-                            ];
-                          }).expand((e) => e).toList(),
+                              if (index != weekdays.length - 1)
+                                const SizedBox(width: 6),
+                            ],
+                          ],
                         ),
                       ],
                     ),

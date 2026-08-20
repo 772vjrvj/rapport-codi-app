@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import '../widgets/main_app_drawer.dart';
+import '../../../../app/widgets/main_app_drawer.dart';
+import '../../../../core/utils/date_time_utils.dart';
+import '../models/schedule_detail_ui.dart';
 import '../widgets/schedule_type_sheet.dart';
 import 'schedule_case_detail_page.dart';
 
@@ -20,19 +22,11 @@ class _MainSchedulePageState extends State<MainSchedulePage>
   int month = 8;
   int selectedDay = 19;
 
-  static const List<String> days = [
-    '', '', '', '', '', '', '1',
-    '2', '3', '4', '5', '6', '7', '8',
-    '9', '10', '11', '12', '13', '14', '15',
-    '16', '17', '18', '19', '20', '21', '22',
-    '23', '24', '25', '26', '27', '28', '29',
-    '30', '31', '', '', '', '', '',
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MainAppDrawer(),
+      drawer: const MainAppDrawer(selected: AppMenu.schedule),
       appBar: AppBar(
         leading: Builder(
           builder: (context) => IconButton(
@@ -68,7 +62,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => _showComingSoon('알림'),
             icon: const Badge(
               smallSize: 7,
               backgroundColor: Color(0xFFE96A77),
@@ -76,7 +70,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => _showComingSoon('검색'),
             icon: const Icon(Icons.search_rounded),
           ),
           const SizedBox(width: 2),
@@ -105,8 +99,13 @@ class _MainSchedulePageState extends State<MainSchedulePage>
   }
 
   Widget _calendar() {
+    // 달력 셀은 선택한 연/월을 기준으로 매번 계산합니다.
+    final firstDay = DateTime(year, month, 1);
+    final daysInMonth = DateUtils.getDaysInMonth(year, month);
+    final firstWeekdayIndex = firstDay.weekday % 7; // 일요일을 0으로 맞춤
+
     const scheduleDays = <int>{
-      3, 5, 7, 11, 12, 17, 18, 19, 20, 21, 25, 27, 29
+      3, 5, 7, 11, 12, 17, 18, 19, 20, 21, 25, 27, 29,
     };
 
     return Container(
@@ -131,18 +130,17 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             child: GridView.builder(
               padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: days.length,
+              itemCount: 42,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 7,
                 childAspectRatio: 1.23,
               ),
               itemBuilder: (context, index) {
-                final value = days[index];
-                if (value.isEmpty) {
+                final day = index - firstWeekdayIndex + 1;
+                if (day < 1 || day > daysInMonth) {
                   return const SizedBox.shrink();
                 }
 
-                final day = int.parse(value);
                 final selected = day == selectedDay;
 
                 Color textColor = AppColors.textBody;
@@ -172,7 +170,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
                             ),
                           ),
                         Text(
-                          value,
+                          '$day',
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight:
@@ -223,7 +221,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
       child: Row(
         children: [
           Text(
-            '$year-${month.toString().padLeft(2, '0')}-${selectedDay.toString().padLeft(2, '0')} (수)',
+            AppDateTime.date(DateTime(year, month, selectedDay)),
             style: const TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w900,
@@ -461,7 +459,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           const SizedBox(width: 44),
           const Spacer(),
           TextButton.icon(
-            onPressed: () {},
+            onPressed: _goToday,
             style: TextButton.styleFrom(
               foregroundColor: AppColors.primaryDark,
             ),
@@ -532,6 +530,21 @@ class _MainSchedulePageState extends State<MainSchedulePage>
           ),
         ],
       ),
+    );
+  }
+
+  void _goToday() {
+    final now = DateTime.now();
+    setState(() {
+      year = now.year;
+      month = now.month;
+      selectedDay = now.day;
+    });
+  }
+
+  void _showComingSoon(String featureName) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$featureName 기능은 다음 단계에서 연결합니다.')),
     );
   }
 
@@ -722,6 +735,8 @@ class _MainSchedulePageState extends State<MainSchedulePage>
       setState(() {
         year = result[0];
         month = result[1];
+        final lastDay = DateUtils.getDaysInMonth(year, month);
+        if (selectedDay > lastDay) selectedDay = lastDay;
       });
     }
   }

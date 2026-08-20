@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import 'login_page.dart';
+import '../../../../app/routes/app_routes.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -47,11 +47,7 @@ class _SplashPageState extends State<SplashPage>
     Timer(const Duration(milliseconds: 1600), () {
       if (!mounted) return;
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => const LoginPage(),
-        ),
-      );
+      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
     });
   }
 

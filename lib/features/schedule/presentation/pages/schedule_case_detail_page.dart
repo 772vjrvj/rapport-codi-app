@@ -1,66 +1,35 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import 'consultation_record_page.dart';
-import 'monthly_treatment_management_page.dart';
-import 'treatment_record_page.dart';
+import '../../../../core/utils/date_time_utils.dart';
+import '../../../consultation_record/presentation/pages/consultation_record_page.dart';
+import '../../../treatment/presentation/pages/monthly_treatment_management_page.dart';
+import '../../../treatment_record/presentation/pages/treatment_record_page.dart';
 
-enum ScheduleDetailKind {
-  treatment,
-  consultation,
-  other,
-  notice,
-}
+import '../models/schedule_detail_ui.dart';
+import '../models/schedule_ui_models.dart';
+import 'schedule_form_page.dart';
 
-class ScheduleListDetailData {
-  final ScheduleDetailKind kind;
-  final String title;
-  final String teacherName;
-  final String teacherRole;
-  final String memberName;
-  final String memberInfo;
-  final String programName;
-  final String programInfo;
-  final String dateText;
-  final String startTime;
-  final String endTime;
-  final String status;
-  final String memo;
-  final String repeatText;
-  final bool allDay;
-  final bool centerShared;
-  final bool quickInput;
-  final String noticeContent;
-
-  const ScheduleListDetailData({
-    required this.kind,
-    required this.title,
-    required this.teacherName,
-    required this.teacherRole,
-    required this.dateText,
-    required this.startTime,
-    required this.endTime,
-    this.memberName = '',
-    this.memberInfo = '',
-    this.programName = '',
-    this.programInfo = '',
-    this.status = '예정',
-    this.memo = '',
-    this.repeatText = '반복 없음',
-    this.allDay = false,
-    this.centerShared = false,
-    this.quickInput = false,
-    this.noticeContent = '',
-  });
-}
-
-class ScheduleCaseDetailPage extends StatelessWidget {
+class ScheduleCaseDetailPage extends StatefulWidget {
   final ScheduleListDetailData data;
 
   const ScheduleCaseDetailPage({
     super.key,
     required this.data,
   });
+
+  @override
+  State<ScheduleCaseDetailPage> createState() => _ScheduleCaseDetailPageState();
+}
+
+class _ScheduleCaseDetailPageState extends State<ScheduleCaseDetailPage> {
+  late ScheduleListDetailData data;
+
+  @override
+  void initState() {
+    super.initState();
+    data = widget.data;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +45,7 @@ class ScheduleCaseDetailPage extends StatelessWidget {
         actions: [
           if (data.kind != ScheduleDetailKind.notice)
             TextButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('수정 화면은 Chapter 12 등록/수정 Form과 연결 예정입니다.'),
-                  ),
-                );
-              },
+              onPressed: _edit,
               child: const Text(
                 '수정',
                 style: TextStyle(
@@ -504,6 +467,101 @@ class ScheduleCaseDetailPage extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  Future<void> _edit() async {
+    if (data.kind == ScheduleDetailKind.notice) return;
+
+    final type = switch (data.kind) {
+      ScheduleDetailKind.treatment => ScheduleFormType.treatment,
+      ScheduleDetailKind.consultation => ScheduleFormType.consultation,
+      ScheduleDetailKind.other => ScheduleFormType.other,
+      ScheduleDetailKind.notice => ScheduleFormType.other,
+    };
+
+    final start = _parseDateTime(data.dateText, data.startTime);
+    final end = _parseDateTime(data.dateText, data.endTime);
+
+    final draft = ScheduleDraft(
+      type: type,
+      teacher: TeacherUi(
+        id: 'TEMP_TEACHER',
+        name: data.teacherName,
+        role: data.teacherRole,
+        color: AppColors.primary,
+      ),
+      member: data.memberName.isEmpty
+          ? null
+          : MemberUi(
+              id: 'TEMP_MEMBER',
+              name: data.memberName,
+              gender: '',
+              birthDate: '',
+              guardianPhone: '',
+            ),
+      program: data.programName.isEmpty
+          ? null
+          : ProgramUi(
+              id: 'TEMP_PROGRAM',
+              category: '',
+              name: data.programName,
+              serviceType: data.programInfo,
+            ),
+      start: start,
+      end: end,
+      repeatText: data.repeatText,
+      memo: data.memo,
+      title: data.title,
+      centerShared: data.centerShared,
+      allDay: data.allDay,
+      quickInput: data.quickInput,
+      consultationReason: data.memo,
+    );
+
+    final result = await Navigator.of(context).push<ScheduleDraft>(
+      MaterialPageRoute(
+        builder: (_) => ScheduleFormPage(
+          type: type,
+          mode: ScheduleFormMode.edit,
+          initialData: draft,
+        ),
+      ),
+    );
+
+    if (result == null || !mounted) return;
+
+    setState(() {
+      data = data.copyWith(
+        title: result.type == ScheduleFormType.other
+            ? result.title
+            : data.title,
+        teacherName: result.teacher?.name ?? data.teacherName,
+        teacherRole: result.teacher?.role ?? data.teacherRole,
+        memberName: result.member?.name ?? data.memberName,
+        programName: result.program?.displayName ?? data.programName,
+        programInfo: result.program?.serviceType ?? data.programInfo,
+        dateText: AppDateTime.date(result.start),
+        startTime: AppDateTime.time(result.start),
+        endTime: AppDateTime.time(result.end),
+        memo: result.type == ScheduleFormType.consultation
+            ? result.consultationReason
+            : result.memo,
+        repeatText: result.repeatText,
+        allDay: result.allDay,
+        centerShared: result.centerShared,
+        quickInput: result.quickInput,
+      );
+    });
+  }
+
+  DateTime _parseDateTime(String dateText, String timeText) {
+    try {
+      final date = dateText.substring(0, 10).split('-').map(int.parse).toList();
+      final time = timeText.split(':').map(int.parse).toList();
+      return DateTime(date[0], date[1], date[2], time[0], time[1]);
+    } catch (_) {
+      return DateTime.now();
+    }
   }
 
   Future<void> _showDeleteDialog(BuildContext context) async {

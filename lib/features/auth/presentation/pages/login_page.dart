@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import '../../../schedule/presentation/pages/main_schedule_page.dart';
+import '../../../../app/routes/app_routes.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -22,10 +22,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const MainSchedulePage(),
-      ),
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      AppRoutes.schedule,
+      (route) => false,
     );
   }
 

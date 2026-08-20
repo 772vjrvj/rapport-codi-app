@@ -387,17 +387,13 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
         ScheduleFieldTile(
           label: '시작',
           value: formatDate(start),
-          helper: allDay ? null : formatTime(start),
+          inlineValue: allDay ? null : formatTime(start),
           onTap: () => _selectDateAndTime(isStart: true),
         ),
         ScheduleFieldTile(
           label: '종료',
-          value: widget.type == ScheduleFormType.other
-              ? formatDate(end)
-              : formatTime(end),
-          helper: widget.type == ScheduleFormType.other && !allDay
-              ? formatTime(end)
-              : null,
+          value: formatDate(end),
+          inlineValue: allDay ? null : formatTime(end),
           onTap: () => _selectDateAndTime(isStart: false),
         ),
         ScheduleFieldTile(

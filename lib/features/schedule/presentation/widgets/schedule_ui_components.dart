@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
+import '../../../../core/utils/date_time_utils.dart';
+import '../../../../core/widgets/app_common_widgets.dart';
 
 class ScheduleSectionCard extends StatelessWidget {
   final String title;
@@ -14,40 +16,9 @@ class ScheduleSectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.025),
-            blurRadius: 18,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 15, 16, 11),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.primaryDark,
-                ),
-              ),
-            ),
-            ...children,
-          ],
-        ),
-      ),
+    return AppSectionCard(
+      title: title,
+      children: children,
     );
   }
 }
@@ -56,6 +27,7 @@ class ScheduleFieldTile extends StatelessWidget {
   final String label;
   final String value;
   final String? helper;
+  final String? inlineValue;
   final Widget? leading;
   final Widget? trailing;
   final bool enabled;
@@ -66,6 +38,7 @@ class ScheduleFieldTile extends StatelessWidget {
     required this.label,
     required this.value,
     this.helper,
+    this.inlineValue,
     this.leading,
     this.trailing,
     this.enabled = true,
@@ -111,16 +84,38 @@ class ScheduleFieldTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      value,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: enabled
-                            ? AppColors.textStrong
-                            : AppColors.textMuted,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            value,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: enabled
+                                  ? AppColors.textStrong
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                        ),
+                        if (inlineValue != null && inlineValue!.isNotEmpty) ...[
+                          const SizedBox(width: 10),
+                          Text(
+                            inlineValue!,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: enabled
+                                  ? AppColors.primaryDark
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     if (helper != null) ...[
                       const SizedBox(height: 3),
@@ -168,30 +163,9 @@ class SchedulePrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-      child: SizedBox(
-        height: 52,
-        child: FilledButton(
-          onPressed: onPressed,
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
-            ),
-          ),
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ),
-      ),
+    return AppPrimaryButton(
+      label: label,
+      onPressed: onPressed,
     );
   }
 }
@@ -240,13 +214,6 @@ class ScheduleChoiceChip extends StatelessWidget {
   }
 }
 
-String twoDigits(int value) => value.toString().padLeft(2, '0');
+String formatDate(DateTime date) => AppDateTime.date(date);
 
-String formatDate(DateTime date) {
-  const weekday = ['월', '화', '수', '목', '금', '토', '일'];
-  return '${date.year}-${twoDigits(date.month)}-${twoDigits(date.day)} (${weekday[date.weekday - 1]})';
-}
-
-String formatTime(DateTime date) {
-  return '${twoDigits(date.hour)}:${twoDigits(date.minute)}';
-}
+String formatTime(DateTime date) => AppDateTime.time(date);
