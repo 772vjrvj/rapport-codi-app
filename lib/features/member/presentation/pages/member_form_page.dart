@@ -93,84 +93,87 @@ class _MemberFormPageState extends State<MemberFormPage> {
       appBar: AppBar(
         title: Text(widget.isEdit ? '이용자 수정' : '이용자 등록'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 16, bottom: 12),
-        children: [
-          AppSectionCard(
-            title: '기본 정보',
-            children: [
-              _textField('이름', _name, isRequired: true),
-              _choiceRow(
-                label: '성별',
-                value: _gender,
-                onTap: _selectGender,
-              ),
-              _choiceRow(
-                label: '생년월일',
-                value: _date(_birthDate),
-                onTap: _selectBirthDate,
-              ),
-            ],
-          ),
-          AppSectionCard(
-            title: '상태',
-            children: [
-              _choiceRow(
-                label: '현재 상태',
-                value: _status,
-                onTap: _selectStatus,
-              ),
-              _choiceRow(
-                label: '상태 적용일',
-                value: _date(_statusDate),
-                onTap: _selectStatusDate,
-              ),
-            ],
-          ),
-          AppSectionCard(
-            title: '연락처',
-            children: [
-              _textField(
-                '전화번호 (모)',
-                _phone,
-                keyboardType: TextInputType.phone,
-              ),
-              SwitchListTile.adaptive(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                value: _mobileAppEnabled,
-                activeColor: AppColors.primary,
-                title: const Text(
-                  '모바일앱 사용',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textStrong,
-                  ),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.only(top: 16, bottom: 12),
+          children: [
+            AppSectionCard(
+              title: '기본 정보',
+              children: [
+                _textField('이름', _name, isRequired: true),
+                _choiceRow(
+                  label: '성별',
+                  value: _gender,
+                  onTap: _selectGender,
                 ),
-                onChanged: (value) => setState(() => _mobileAppEnabled = value),
-              ),
-            ],
-          ),
-          AppSectionCard(
-            title: '추가 정보',
-            children: [
-              _textField('주소', _address),
-              _textField('이메일', _email, keyboardType: TextInputType.emailAddress),
-              _textField('학교', _school),
-              _choiceRow(
-                label: '장애유형',
-                value: _disabilityType,
-                onTap: _selectDisability,
-              ),
-              _choiceRow(
-                label: '유입경로',
-                value: _referralSource,
-                onTap: _selectReferral,
-              ),
-              _textField('메모', _memo, minLines: 3),
-            ],
-          ),
-        ],
+                _choiceRow(
+                  label: '생년월일',
+                  value: _date(_birthDate),
+                  onTap: _selectBirthDate,
+                ),
+              ],
+            ),
+            AppSectionCard(
+              title: '상태',
+              children: [
+                _choiceRow(
+                  label: '현재 상태',
+                  value: _status,
+                  onTap: _selectStatus,
+                ),
+                _choiceRow(
+                  label: '상태 적용일',
+                  value: _date(_statusDate),
+                  onTap: _selectStatusDate,
+                ),
+              ],
+            ),
+            AppSectionCard(
+              title: '연락처',
+              children: [
+                _textField(
+                  '전화번호 (모)',
+                  _phone,
+                  keyboardType: TextInputType.phone,
+                ),
+                SwitchListTile.adaptive(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  value: _mobileAppEnabled,
+                  activeColor: AppColors.primary,
+                  title: const Text(
+                    '모바일앱 사용',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textStrong,
+                    ),
+                  ),
+                  onChanged: (value) => setState(() => _mobileAppEnabled = value),
+                ),
+              ],
+            ),
+            AppSectionCard(
+              title: '추가 정보',
+              children: [
+                _textField('주소', _address),
+                _textField('이메일', _email, keyboardType: TextInputType.emailAddress),
+                _textField('학교', _school),
+                _choiceRow(
+                  label: '장애유형',
+                  value: _disabilityType,
+                  onTap: _selectDisability,
+                ),
+                _choiceRow(
+                  label: '유입경로',
+                  value: _referralSource,
+                  onTap: _selectReferral,
+                ),
+                _textField('메모', _memo, minLines: 3),
+              ],
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: AppPrimaryButton(
         label: widget.isEdit ? '수정 저장' : '이용자 등록',

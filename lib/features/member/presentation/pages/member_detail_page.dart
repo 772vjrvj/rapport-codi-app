@@ -39,70 +39,73 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           const SizedBox(width: 6),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
-        children: [
-          _headerCard(),
-          const SizedBox(height: 14),
-          _section(
-            title: '이용자 정보',
-            children: [
-              _row('상태', _member.status, badge: true),
-              _row('전화번호 (모)', _empty(_member.motherPhone)),
-              if (_member.mobileAppEnabled)
-                _row('모바일앱', '사용중', valueColor: AppColors.primaryDark),
-              _row('주소', _empty(_member.address)),
-              _row('이메일', _empty(_member.email)),
-              _row('학교', _empty(_member.school)),
-              _row('장애유형', _member.disabilityType),
-              _row(
-                '초기상담일시',
-                _member.firstConsultationAt == null
-                    ? '등록된 정보가 없습니다.'
-                    : _dateTime(_member.firstConsultationAt!),
-              ),
-              _row('유입경로', _empty(_member.referralSource)),
-              _row('메모', _empty(_member.memo), multiline: true),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-            child: InkWell(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => MemberTreatmentStatusPage(member: _member),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 28),
+          children: [
+            _headerCard(),
+            const SizedBox(height: 14),
+            _section(
+              title: '이용자 정보',
+              children: [
+                _row('상태', _member.status, badge: true),
+                _row('전화번호 (모)', _empty(_member.motherPhone)),
+                if (_member.mobileAppEnabled)
+                  _row('모바일앱', '사용중', valueColor: AppColors.primaryDark),
+                _row('주소', _empty(_member.address)),
+                _row('이메일', _empty(_member.email)),
+                _row('학교', _empty(_member.school)),
+                _row('장애유형', _member.disabilityType),
+                _row(
+                  '초기상담일시',
+                  _member.firstConsultationAt == null
+                      ? '등록된 정보가 없습니다.'
+                      : _dateTime(_member.firstConsultationAt!),
                 ),
-              ),
+                _row('유입경로', _empty(_member.referralSource)),
+                _row('메모', _empty(_member.memo), multiline: true),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Material(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 17),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppColors.border),
+              child: InkWell(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => MemberTreatmentStatusPage(member: _member),
+                  ),
                 ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.monitor_heart_outlined, color: AppColors.primaryDark),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        '치료현황 보기',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.textStrong,
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 17),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.monitor_heart_outlined, color: AppColors.primaryDark),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          '치료현황 보기',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.textStrong,
+                          ),
                         ),
                       ),
-                    ),
-                    Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
-                  ],
+                      Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

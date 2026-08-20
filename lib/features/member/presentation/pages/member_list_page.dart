@@ -53,21 +53,24 @@ class _MemberListPageState extends State<MemberListPage> {
           const SizedBox(width: 4),
         ],
       ),
-      body: Column(
-        children: [
-          _searchBox(),
-          _summary(filtered.length),
-          Expanded(
-            child: filtered.isEmpty
-                ? const _EmptyMembers()
-                : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                    itemCount: filtered.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 9),
-                    itemBuilder: (context, index) => _memberCard(filtered[index]),
-                  ),
-          ),
-        ],
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            _searchBox(),
+            _summary(filtered.length),
+            Expanded(
+              child: filtered.isEmpty
+                  ? const _EmptyMembers()
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 9),
+                      itemBuilder: (context, index) => _memberCard(filtered[index]),
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -11,71 +11,76 @@ Future<void> openScheduleTypeSheet(BuildContext context) async {
     backgroundColor: Colors.transparent,
     builder: (context) {
       return Container(
-        padding: const EdgeInsets.fromLTRB(18, 12, 18, 22),
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 42,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.circular(999),
-              ),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 12, 18, 22),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 42,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.border,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                const Text(
+                  '일정 등록',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textStrong,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  '등록할 일정 종류를 선택하세요.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                _TypeTile(
+                  icon: Icons.medical_services_outlined,
+                  title: '치료',
+                  subtitle: '이용자와 프로그램을 선택해 치료 일정을 등록합니다.',
+                  onTap: () => Navigator.pop(
+                    context,
+                    ScheduleFormType.treatment,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _TypeTile(
+                  icon: Icons.forum_outlined,
+                  title: '상담 / 평가',
+                  subtitle: '초기상담, 평가 등 상담 일정을 등록합니다.',
+                  onTap: () => Navigator.pop(
+                    context,
+                    ScheduleFormType.consultation,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _TypeTile(
+                  icon: Icons.event_note_outlined,
+                  title: '기타',
+                  subtitle: '회의, 교육, 센터 공용 일정 등을 등록합니다.',
+                  onTap: () => Navigator.pop(
+                    context,
+                    ScheduleFormType.other,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 18),
-            const Text(
-              '일정 등록',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: AppColors.textStrong,
-              ),
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              '등록할 일정 종류를 선택하세요.',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textMuted,
-              ),
-            ),
-            const SizedBox(height: 18),
-            _TypeTile(
-              icon: Icons.medical_services_outlined,
-              title: '치료',
-              subtitle: '이용자와 프로그램을 선택해 치료 일정을 등록합니다.',
-              onTap: () => Navigator.pop(
-                context,
-                ScheduleFormType.treatment,
-              ),
-            ),
-            const SizedBox(height: 8),
-            _TypeTile(
-              icon: Icons.forum_outlined,
-              title: '상담 / 평가',
-              subtitle: '초기상담, 평가 등 상담 일정을 등록합니다.',
-              onTap: () => Navigator.pop(
-                context,
-                ScheduleFormType.consultation,
-              ),
-            ),
-            const SizedBox(height: 8),
-            _TypeTile(
-              icon: Icons.event_note_outlined,
-              title: '기타',
-              subtitle: '회의, 교육, 센터 공용 일정 등을 등록합니다.',
-              onTap: () => Navigator.pop(
-                context,
-                ScheduleFormType.other,
-              ),
-            ),
-          ],
+          ),
         ),
       );
     },

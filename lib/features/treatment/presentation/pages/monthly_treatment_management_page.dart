@@ -36,110 +36,113 @@ class _MonthlyTreatmentManagementPageState
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(17),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [AppColors.primary50, Colors.white],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary200),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${widget.memberName} · ${widget.programName}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.textStrong,
-                  ),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          children: [
+            Container(
+              padding: const EdgeInsets.all(17),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary50, Colors.white],
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  widget.teacherName,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textBody,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 14),
-          _Card(
-            title: '2026년 08월',
-            children: [
-              _CounterRow(
-                label: '총 치료 회기',
-                value: '$treatmentCount회',
-                onMinus: treatmentCount > 1
-                    ? () => setState(() => treatmentCount--)
-                    : null,
-                onPlus: () => setState(() => treatmentCount++),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.primary200),
               ),
-              _ValueRow(
-                label: '치료 반복',
-                value: repeatText,
-                onTap: _changeRepeat,
-              ),
-              _SwitchRow(
-                label: '바우처',
-                value: voucher,
-                onChanged: (v) => setState(() => voucher = v),
-              ),
-              _CounterRow(
-                label: '1회 치료시간',
-                value: '$durationMinutes분',
-                onMinus: durationMinutes > 10
-                    ? () => setState(() => durationMinutes -= 10)
-                    : null,
-                onPlus: () => setState(() => durationMinutes += 10),
-              ),
-              _ValueRow(
-                label: '1회 치료비',
-                value: '${_money(price)}원',
-                onTap: _editPrice,
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: AppColors.primary50,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.primary200),
-            ),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    '예상 월 서비스 금액',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${widget.memberName} · ${widget.programName}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
                       color: AppColors.textStrong,
                     ),
                   ),
-                ),
-                Text(
-                  '${_money(treatmentCount * price)}원',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: AppColors.primaryDark,
+                  const SizedBox(height: 5),
+                  Text(
+                    widget.teacherName,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textBody,
+                    ),
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            _Card(
+              title: '2026년 08월',
+              children: [
+                _CounterRow(
+                  label: '총 치료 회기',
+                  value: '$treatmentCount회',
+                  onMinus: treatmentCount > 1
+                      ? () => setState(() => treatmentCount--)
+                      : null,
+                  onPlus: () => setState(() => treatmentCount++),
+                ),
+                _ValueRow(
+                  label: '치료 반복',
+                  value: repeatText,
+                  onTap: _changeRepeat,
+                ),
+                _SwitchRow(
+                  label: '바우처',
+                  value: voucher,
+                  onChanged: (v) => setState(() => voucher = v),
+                ),
+                _CounterRow(
+                  label: '1회 치료시간',
+                  value: '$durationMinutes분',
+                  onMinus: durationMinutes > 10
+                      ? () => setState(() => durationMinutes -= 10)
+                      : null,
+                  onPlus: () => setState(() => durationMinutes += 10),
+                ),
+                _ValueRow(
+                  label: '1회 치료비',
+                  value: '${_money(price)}원',
+                  onTap: _editPrice,
                 ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(height: 14),
+            Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: AppColors.primary50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.primary200),
+              ),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      '예상 월 서비스 금액',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.textStrong,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${_money(treatmentCount * price)}원',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.primaryDark,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         top: false,

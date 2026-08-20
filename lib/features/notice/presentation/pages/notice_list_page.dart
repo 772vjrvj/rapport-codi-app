@@ -72,104 +72,107 @@ class NoticeListPage extends StatelessWidget {
         ),
         title: const Text('공지사항'),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 26),
-        itemCount: notices.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          final notice = notices[index];
-          return Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            child: InkWell(
+      body: SafeArea(
+        top: false,
+        child: ListView.separated(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 26),
+          itemCount: notices.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 8),
+          itemBuilder: (context, index) {
+            final notice = notices[index];
+            return Material(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(14),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => NoticeDetailPage(notice: notice),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(14),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => NoticeDetailPage(notice: notice),
+                  ),
                 ),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        if (notice.important) ...[
-                          const Text(
-                            '중요',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFFE26943),
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          if (notice.important) ...[
+                            const Text(
+                              '중요',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFFE26943),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                          Expanded(
+                            child: Text(
+                              notice.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                color: AppColors.textStrong,
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 8),
+                          if (notice.attachments.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Icon(
+                                Icons.attach_file_rounded,
+                                size: 19,
+                                color: AppColors.primary,
+                              ),
+                            ),
                         ],
-                        Expanded(
-                          child: Text(
-                            notice.title,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.textStrong,
+                      ),
+                      const SizedBox(height: 9),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              notice.createdAt,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textMuted,
+                              ),
                             ),
                           ),
-                        ),
-                        if (notice.attachments.isNotEmpty)
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8),
-                            child: Icon(
-                              Icons.attach_file_rounded,
-                              size: 19,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 9),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            notice.createdAt,
+                          Text(
+                            '${notice.writer} / ${notice.role}',
                             style: const TextStyle(
                               fontSize: 11,
                               color: AppColors.textMuted,
                             ),
                           ),
-                        ),
-                        Text(
-                          '${notice.writer} / ${notice.role}',
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: AppColors.textMuted,
+                          const SizedBox(width: 12),
+                          Text(
+                            notice.category,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: AppColors.primaryDark,
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          notice.category,
-                          style: const TextStyle(
-                            fontSize: 11,
-                            color: AppColors.primaryDark,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

@@ -136,136 +136,139 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) => setState(() => query = value),
-              decoration: InputDecoration(
-                hintText: '이름 또는 직함을 검색하세요',
-                prefixIcon: const Icon(Icons.search_rounded),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AppColors.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AppColors.border),
-                ),
-              ),
-            ),
-          ),
-
-          // As-Is 화면에 있던 퇴사자 감추기 옵션입니다.
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-            padding: const EdgeInsets.only(left: 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text(
-                '퇴사자 감추기',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textStrong,
-                ),
-              ),
-              value: hideRetired,
-              activeThumbColor: AppColors.primary,
-              onChanged: (value) => setState(() => hideRetired = value),
-            ),
-          ),
-
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 18),
-              itemCount: filtered.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 7),
-              itemBuilder: (context, index) {
-                final teacher = filtered[index];
-                final selected = teacher.name == selectedName;
-
-                return Material(
-                  color: selected ? AppColors.primary50 : Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  child: InkWell(
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) => setState(() => query = value),
+                decoration: InputDecoration(
+                  hintText: '이름 또는 직함을 검색하세요',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    onTap: () => Navigator.pop(context, teacher),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 15,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: selected
-                              ? AppColors.primary
-                              : AppColors.border,
-                          width: selected ? 1.4 : 1,
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                ),
+              ),
+            ),
+  
+            // As-Is 화면에 있던 퇴사자 감추기 옵션입니다.
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              padding: const EdgeInsets.only(left: 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text(
+                  '퇴사자 감추기',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textStrong,
+                  ),
+                ),
+                value: hideRetired,
+                activeThumbColor: AppColors.primary,
+                onChanged: (value) => setState(() => hideRetired = value),
+              ),
+            ),
+  
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 18),
+                itemCount: filtered.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 7),
+                itemBuilder: (context, index) {
+                  final teacher = filtered[index];
+                  final selected = teacher.name == selectedName;
+  
+                  return Material(
+                    color: selected ? AppColors.primary50 : Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => Navigator.pop(context, teacher),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 15,
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: teacher.color,
-                              shape: BoxShape.circle,
-                            ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: selected
+                                ? AppColors.primary
+                                : AppColors.border,
+                            width: selected ? 1.4 : 1,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              teacher.id == 'ALL' ? '전체' : teacher.displayName,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: selected
-                                    ? FontWeight.w900
-                                    : FontWeight.w800,
-                                color: AppColors.textStrong,
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: teacher.color,
+                                shape: BoxShape.circle,
                               ),
                             ),
-                          ),
-                          if (teacher.retired)
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8),
+                            const SizedBox(width: 12),
+                            Expanded(
                               child: Text(
-                                '퇴사',
+                                teacher.id == 'ALL' ? '전체' : teacher.displayName,
                                 style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.deepOrange,
-                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14,
+                                  fontWeight: selected
+                                      ? FontWeight.w900
+                                      : FontWeight.w800,
+                                  color: AppColors.textStrong,
                                 ),
                               ),
                             ),
-                          Icon(
-                            selected
-                                ? Icons.check_circle_rounded
-                                : Icons.chevron_right_rounded,
-                            color: selected
-                                ? AppColors.primary
-                                : AppColors.textMuted,
-                          ),
-                        ],
+                            if (teacher.retired)
+                              const Padding(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Text(
+                                  '퇴사',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.deepOrange,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            Icon(
+                              selected
+                                  ? Icons.check_circle_rounded
+                                  : Icons.chevron_right_rounded,
+                              color: selected
+                                  ? AppColors.primary
+                                  : AppColors.textMuted,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

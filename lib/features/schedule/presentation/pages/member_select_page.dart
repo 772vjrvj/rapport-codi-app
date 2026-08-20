@@ -147,121 +147,124 @@ class _MemberSelectPageState extends State<MemberSelectPage> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) => setState(() => query = value),
-              decoration: InputDecoration(
-                hintText: '이름, 생년월일 또는 전화번호 검색',
-                prefixIcon: const Icon(Icons.search_rounded),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AppColors.border),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: AppColors.border),
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) => setState(() => query = value),
+                decoration: InputDecoration(
+                  hintText: '이름, 생년월일 또는 전화번호 검색',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: AppColors.border),
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 18),
-              itemCount: filtered.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 7),
-              itemBuilder: (context, index) {
-                final member = filtered[index];
-                final selected = widget.selected?.id == member.id;
-
-                return Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                  child: InkWell(
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 18),
+                itemCount: filtered.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 7),
+                itemBuilder: (context, index) {
+                  final member = filtered[index];
+                  final selected = widget.selected?.id == member.id;
+  
+                  return Material(
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(14),
-                    onTap: () => Navigator.pop(context, member),
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(15, 13, 13, 13),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: selected
-                              ? AppColors.primary200
-                              : AppColors.border,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => Navigator.pop(context, member),
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(15, 13, 13, 13),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: selected
+                                ? AppColors.primary200
+                                : AppColors.border,
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    if (member.terminated) ...[
-                                      const Text(
-                                        '종결',
-                                        style: TextStyle(
-                                          fontSize: 11,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      if (member.terminated) ...[
+                                        const Text(
+                                          '종결',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w900,
+                                            color: Colors.deepOrange,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ],
+                                      Text(
+                                        member.name,
+                                        style: const TextStyle(
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w900,
-                                          color: Colors.deepOrange,
+                                          color: AppColors.textStrong,
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
                                     ],
-                                    Text(
-                                      member.name,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w900,
-                                        color: AppColors.textStrong,
-                                      ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    '${member.gender} / ${member.birthDate}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textBody,
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  '${member.gender} / ${member.birthDate}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColors.textBody,
                                   ),
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
-                                  member.guardianPhone,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textMuted,
+                                  const SizedBox(height: 3),
+                                  Text(
+                                    member.guardianPhone,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.textMuted,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Icon(
-                            selected
-                                ? Icons.check_circle_rounded
-                                : Icons.chevron_right_rounded,
-                            color: selected
-                                ? AppColors.primary
-                                : AppColors.textMuted,
-                          ),
-                        ],
+                            Icon(
+                              selected
+                                  ? Icons.check_circle_rounded
+                                  : Icons.chevron_right_rounded,
+                              color: selected
+                                  ? AppColors.primary
+                                  : AppColors.textMuted,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -17,89 +17,92 @@ class MemberTreatmentStatusPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('치료 현황')),
-      body: Column(
-        children: [
-          _MemberHeader(member: member),
-          Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 26),
-              itemCount: items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  child: InkWell(
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            _MemberHeader(member: member),
+            Expanded(
+              child: ListView.separated(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 26),
+                itemCount: items.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return Material(
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    onTap: () {
-                      if (!item.treatment) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('상담/평가 이력입니다.')),
-                        );
-                        return;
-                      }
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => MemberTreatmentSessionPage(
-                            member: member,
-                            programName: item.title,
-                            teacherName: item.teacher,
-                            period: item.dateText,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.dateText,
-                                  style: const TextStyle(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w900,
-                                    color: AppColors.primaryDark,
-                                  ),
-                                ),
-                                const SizedBox(height: 7),
-                                Text(
-                                  item.title,
-                                  style: const TextStyle(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: AppColors.textStrong,
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  item.teacher,
-                                  style: const TextStyle(
-                                    fontSize: 11.5,
-                                    color: AppColors.textBody,
-                                  ),
-                                ),
-                              ],
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        if (!item.treatment) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('상담/평가 이력입니다.')),
+                          );
+                          return;
+                        }
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => MemberTreatmentSessionPage(
+                              member: member,
+                              programName: item.title,
+                              teacherName: item.teacher,
+                              period: item.dateText,
                             ),
                           ),
-                          const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
-                        ],
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.border),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.dateText,
+                                    style: const TextStyle(
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w900,
+                                      color: AppColors.primaryDark,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 7),
+                                  Text(
+                                    item.title,
+                                    style: const TextStyle(
+                                      fontSize: 13.5,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppColors.textStrong,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    item.teacher,
+                                    style: const TextStyle(
+                                      fontSize: 11.5,
+                                      color: AppColors.textBody,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

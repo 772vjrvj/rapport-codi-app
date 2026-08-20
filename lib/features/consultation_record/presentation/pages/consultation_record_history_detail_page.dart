@@ -67,33 +67,36 @@ class _ConsultationRecordHistoryDetailPageState
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          _SummaryCard(record: record),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '상담/평가 내용',
-            controller: contentController,
-            editable: editMode,
-            emptyText: '등록된 상담/평가 내용이 없습니다.',
-            minLines: 9,
-            fillColor: AppColors.consultationSoft,
-            focusColor: AppColors.consultation,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '메모',
-            controller: memoController,
-            editable: editMode,
-            emptyText: '등록된 메모가 없습니다.',
-            minLines: 4,
-            fillColor: AppColors.consultationSoft,
-            focusColor: AppColors.consultation,
-          ),
-          const SizedBox(height: 14),
-          AppAttachmentCard(count: record.attachmentCount),
-        ],
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          children: [
+            _SummaryCard(record: record),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '상담/평가 내용',
+              controller: contentController,
+              editable: editMode,
+              emptyText: '등록된 상담/평가 내용이 없습니다.',
+              minLines: 9,
+              fillColor: AppColors.consultationSoft,
+              focusColor: AppColors.consultation,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '메모',
+              controller: memoController,
+              editable: editMode,
+              emptyText: '등록된 메모가 없습니다.',
+              minLines: 4,
+              fillColor: AppColors.consultationSoft,
+              focusColor: AppColors.consultation,
+            ),
+            const SizedBox(height: 14),
+            AppAttachmentCard(count: record.attachmentCount),
+          ],
+        ),
       ),
     );
   }

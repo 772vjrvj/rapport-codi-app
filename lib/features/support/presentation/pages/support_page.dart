@@ -31,82 +31,85 @@ class SupportPage extends StatelessWidget {
         ),
         title: const Text('서비스 지원'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
-        children: [
-          _MenuCard(
-            icon: Icons.description_outlined,
-            title: '이용약관',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const SupportDocumentPage(
-                  title: '이용약관',
-                  heading: 'RapportCodi 서비스 이용약관',
-                  body: _termsBody,
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
+          children: [
+            _MenuCard(
+              icon: Icons.description_outlined,
+              title: '이용약관',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const SupportDocumentPage(
+                    title: '이용약관',
+                    heading: 'RapportCodi 서비스 이용약관',
+                    body: _termsBody,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          _MenuCard(
-            icon: Icons.privacy_tip_outlined,
-            title: '개인정보 처리방침',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const SupportDocumentPage(
-                  title: '개인정보 처리방침',
-                  heading: '개인정보 취급방침',
-                  body: _privacyBody,
+            const SizedBox(height: 10),
+            _MenuCard(
+              icon: Icons.privacy_tip_outlined,
+              title: '개인정보 처리방침',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const SupportDocumentPage(
+                    title: '개인정보 처리방침',
+                    heading: '개인정보 취급방침',
+                    body: _privacyBody,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 28),
-          const Text(
-            '도움이 필요하신가요?',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textStrong,
+            const SizedBox(height: 28),
+            const Text(
+              '도움이 필요하신가요?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textStrong,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          _ContactCard(
-            icon: Icons.headset_mic_outlined,
-            title: '전화 문의하기',
-            value: '070-8823-7799',
-            onTap: () => _copy(context, '070-8823-7799', '전화번호'),
-          ),
-          const SizedBox(height: 12),
-          _ContactCard(
-            icon: Icons.forward_to_inbox_outlined,
-            title: '이메일 문의하기',
-            value: 'rapportcodi@test.com',
-            onTap: () => _copy(context, 'rapportcodi@test.com', '이메일'),
-          ),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
+            const SizedBox(height: 16),
+            _ContactCard(
+              icon: Icons.headset_mic_outlined,
+              title: '전화 문의하기',
+              value: '070-8823-7799',
+              onTap: () => _copy(context, '070-8823-7799', '전화번호'),
             ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _InfoLine('운영시간', '월~금 오전 09:00 ~ 오후 06:00'),
-                SizedBox(height: 10),
-                _InfoLine('점심시간', '오후 12:00 ~ 오후 01:00'),
-                SizedBox(height: 10),
-                _InfoLine('휴무', '공휴일은 휴무입니다.'),
-              ],
+            const SizedBox(height: 12),
+            _ContactCard(
+              icon: Icons.forward_to_inbox_outlined,
+              title: '이메일 문의하기',
+              value: 'rapportcodi@test.com',
+              onTap: () => _copy(context, 'rapportcodi@test.com', '이메일'),
             ),
-          ),
-        ],
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _InfoLine('운영시간', '월~금 오전 09:00 ~ 오후 06:00'),
+                  SizedBox(height: 10),
+                  _InfoLine('점심시간', '오후 12:00 ~ 오후 01:00'),
+                  SizedBox(height: 10),
+                  _InfoLine('휴무', '공휴일은 휴무입니다.'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

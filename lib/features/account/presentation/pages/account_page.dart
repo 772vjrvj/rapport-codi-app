@@ -30,143 +30,146 @@ class _AccountPageState extends State<AccountPage> {
         ),
         title: const Text('나의 계정'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
-        children: [
-          Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: const Row(
-              children: [
-                CircleAvatar(
-                  radius: 34,
-                  backgroundColor: AppColors.primary50,
-                  child: Icon(
-                    Icons.person_outline_rounded,
-                    size: 38,
-                    color: AppColors.primaryDark,
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
+          children: [
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 34,
+                    backgroundColor: AppColors.primary50,
+                    child: Icon(
+                      Icons.person_outline_rounded,
+                      size: 38,
+                      color: AppColors.primaryDark,
+                    ),
                   ),
-                ),
-                SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '박병준 / 대표님',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w900,
-                          color: AppColors.textStrong,
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '박병준 / 대표님',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.textStrong,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'rapportTest',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textBody,
+                        SizedBox(height: 8),
+                        Text(
+                          'rapportTest',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textBody,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 3),
-                      Text(
-                        '010-3093-1959',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textBody,
+                        SizedBox(height: 3),
+                        Text(
+                          '010-3093-1959',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textBody,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 3),
-                      Text(
-                        'libre@kakao.com',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textBody,
+                        SizedBox(height: 3),
+                        Text(
+                          'libre@kakao.com',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textBody,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
-          _MenuTile(
-            icon: Icons.manage_accounts_outlined,
-            title: '프로필 변경',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const ProfileEditPage()),
+            const SizedBox(height: 14),
+            _MenuTile(
+              icon: Icons.manage_accounts_outlined,
+              title: '프로필 변경',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileEditPage()),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          _MenuTile(
-            icon: Icons.lock_outline_rounded,
-            title: '비밀번호 변경',
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PasswordChangePage()),
+            const SizedBox(height: 8),
+            _MenuTile(
+              icon: Icons.lock_outline_rounded,
+              title: '비밀번호 변경',
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PasswordChangePage()),
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          const _SectionLabel('알림'),
-          const SizedBox(height: 8),
-          _SwitchTile(
-            title: '관리자 알림',
-            value: adminNotification,
-            onChanged: (value) => setState(() => adminNotification = value),
-          ),
-          const SizedBox(height: 8),
-          _SwitchTile(
-            title: '미리 알림',
-            value: advanceNotification,
-            onChanged: (value) => setState(() => advanceNotification = value),
-          ),
-          const SizedBox(height: 20),
-          const _SectionLabel('앱정보'),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 17,
+            const SizedBox(height: 20),
+            const _SectionLabel('알림'),
+            const SizedBox(height: 8),
+            _SwitchTile(
+              title: '관리자 알림',
+              value: adminNotification,
+              onChanged: (value) => setState(() => adminNotification = value),
             ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.border),
+            const SizedBox(height: 8),
+            _SwitchTile(
+              title: '미리 알림',
+              value: advanceNotification,
+              onChanged: (value) => setState(() => advanceNotification = value),
             ),
-            child: const Row(
-              children: [
-                Text(
-                  '버전',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textStrong,
+            const SizedBox(height: 20),
+            const _SectionLabel('앱정보'),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 17,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: const Row(
+                children: [
+                  Text(
+                    '버전',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textStrong,
+                    ),
                   ),
-                ),
-                Spacer(),
-                Text(
-                  '개발 버전',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textMuted,
+                  Spacer(),
+                  Text(
+                    '개발 버전',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textMuted,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 22),
-          OutlinedButton.icon(
-            onPressed: () => _confirmLogout(context),
-            icon: const Icon(Icons.logout_rounded),
-            label: const Text('로그아웃'),
-          ),
-        ],
+            const SizedBox(height: 22),
+            OutlinedButton.icon(
+              onPressed: () => _confirmLogout(context),
+              icon: const Icon(Icons.logout_rounded),
+              label: const Text('로그아웃'),
+            ),
+          ],
+        ),
       ),
     );
   }

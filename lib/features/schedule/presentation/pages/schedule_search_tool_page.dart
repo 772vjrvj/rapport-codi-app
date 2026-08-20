@@ -96,140 +96,143 @@ class _ScheduleSearchToolPageState extends State<ScheduleSearchToolPage> {
           const SizedBox(width: 4),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
-        children: [
-          _Section(
-            title: '선생님',
-            child: Column(
-              children: [
-                ...visibleTeachers.map((teacher) {
-                  final selected =
-                      teacherNames.isEmpty || teacherNames.contains(teacher.$1);
-                  return _CheckRow(
-                    dotColor: teacher.$3,
-                    title: '${teacher.$1} / ${teacher.$2}',
-                    selected: selected,
-                    trailingLabel: teacher.$4 ? '퇴사' : null,
-                    onTap: () => setState(() {
-                      // 빈 Set은 '전체 선택'을 뜻합니다.
-                      if (teacherNames.isEmpty) {
-                        teacherNames.addAll(teachers.map((item) => item.$1));
-                        teacherNames.remove(teacher.$1);
-                      } else if (selected) {
-                        teacherNames.remove(teacher.$1);
-                      } else {
-                        teacherNames.add(teacher.$1);
-                        if (teacherNames.length == teachers.length) {
-                          teacherNames.clear();
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
+          children: [
+            _Section(
+              title: '선생님',
+              child: Column(
+                children: [
+                  ...visibleTeachers.map((teacher) {
+                    final selected =
+                        teacherNames.isEmpty || teacherNames.contains(teacher.$1);
+                    return _CheckRow(
+                      dotColor: teacher.$3,
+                      title: '${teacher.$1} / ${teacher.$2}',
+                      selected: selected,
+                      trailingLabel: teacher.$4 ? '퇴사' : null,
+                      onTap: () => setState(() {
+                        // 빈 Set은 '전체 선택'을 뜻합니다.
+                        if (teacherNames.isEmpty) {
+                          teacherNames.addAll(teachers.map((item) => item.$1));
+                          teacherNames.remove(teacher.$1);
+                        } else if (selected) {
+                          teacherNames.remove(teacher.$1);
+                        } else {
+                          teacherNames.add(teacher.$1);
+                          if (teacherNames.length == teachers.length) {
+                            teacherNames.clear();
+                          }
                         }
-                      }
-                    }),
-                  );
-                }),
-                TextButton.icon(
-                  onPressed: () => setState(
-                    () => showAllTeachers = !showAllTeachers,
+                      }),
+                    );
+                  }),
+                  TextButton.icon(
+                    onPressed: () => setState(
+                      () => showAllTeachers = !showAllTeachers,
+                    ),
+                    icon: Icon(
+                      showAllTeachers
+                          ? Icons.expand_less_rounded
+                          : Icons.expand_more_rounded,
+                    ),
+                    label: Text(
+                      showAllTeachers ? '선생님 접기' : '선생님 전체 보기',
+                    ),
                   ),
-                  icon: Icon(
-                    showAllTeachers
-                        ? Icons.expand_less_rounded
-                        : Icons.expand_more_rounded,
-                  ),
-                  label: Text(
-                    showAllTeachers ? '선생님 접기' : '선생님 전체 보기',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _Section(
-            title: '이용자 / 프로그램',
-            child: Column(
-              children: [
-                _SelectRow(
-                  title: member == null
-                      ? '이용자를 선택하세요.'
-                      : '${member!.name} (${member!.gender}, ${member!.birthDate})',
-                  selected: member != null,
-                  onTap: _selectMember,
-                  onClear: member == null
-                      ? null
-                      : () => setState(() => member = null),
-                ),
-                const Divider(height: 1),
-                _SelectRow(
-                  title: program == null
-                      ? '프로그램을 선택하세요.'
-                      : program!.displayName,
-                  selected: program != null,
-                  onTap: _selectProgram,
-                  onClear: program == null
-                      ? null
-                      : () => setState(() => program = null),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          _Section(
-            title: '일정구분',
-            child: Column(
-              children: [
-                _KindRow(
-                  label: '치료',
-                  color: const Color(0xFF3D9CC4),
-                  kind: ScheduleSearchKind.treatment,
-                  kinds: kinds,
-                  onChanged: _toggleKind,
-                ),
-                _KindRow(
-                  label: '상담/평가',
-                  color: const Color(0xFFFF9800),
-                  kind: ScheduleSearchKind.consultation,
-                  kinds: kinds,
-                  onChanged: _toggleKind,
-                ),
-                _KindRow(
-                  label: '기타',
-                  color: const Color(0xFF7CB342),
-                  kind: ScheduleSearchKind.other,
-                  kinds: kinds,
-                  onChanged: _toggleKind,
-                ),
-                _KindRow(
-                  label: '센터공유',
-                  color: const Color(0xFF8D756A),
-                  kind: ScheduleSearchKind.centerShared,
-                  kinds: kinds,
-                  onChanged: _toggleKind,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: SwitchListTile(
-              title: const Text(
-                '유효 일정만 보기',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                ],
               ),
-              subtitle: const Text(
-                '취소/종결/이월 일정 숨김',
-                style: TextStyle(fontSize: 11, color: AppColors.textMuted),
-              ),
-              value: validOnly,
-              activeThumbColor: AppColors.primary,
-              onChanged: (value) => setState(() => validOnly = value),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            _Section(
+              title: '이용자 / 프로그램',
+              child: Column(
+                children: [
+                  _SelectRow(
+                    title: member == null
+                        ? '이용자를 선택하세요.'
+                        : '${member!.name} (${member!.gender}, ${member!.birthDate})',
+                    selected: member != null,
+                    onTap: _selectMember,
+                    onClear: member == null
+                        ? null
+                        : () => setState(() => member = null),
+                  ),
+                  const Divider(height: 1),
+                  _SelectRow(
+                    title: program == null
+                        ? '프로그램을 선택하세요.'
+                        : program!.displayName,
+                    selected: program != null,
+                    onTap: _selectProgram,
+                    onClear: program == null
+                        ? null
+                        : () => setState(() => program = null),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            _Section(
+              title: '일정구분',
+              child: Column(
+                children: [
+                  _KindRow(
+                    label: '치료',
+                    color: const Color(0xFF3D9CC4),
+                    kind: ScheduleSearchKind.treatment,
+                    kinds: kinds,
+                    onChanged: _toggleKind,
+                  ),
+                  _KindRow(
+                    label: '상담/평가',
+                    color: const Color(0xFFFF9800),
+                    kind: ScheduleSearchKind.consultation,
+                    kinds: kinds,
+                    onChanged: _toggleKind,
+                  ),
+                  _KindRow(
+                    label: '기타',
+                    color: const Color(0xFF7CB342),
+                    kind: ScheduleSearchKind.other,
+                    kinds: kinds,
+                    onChanged: _toggleKind,
+                  ),
+                  _KindRow(
+                    label: '센터공유',
+                    color: const Color(0xFF8D756A),
+                    kind: ScheduleSearchKind.centerShared,
+                    kinds: kinds,
+                    onChanged: _toggleKind,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: SwitchListTile(
+                title: const Text(
+                  '유효 일정만 보기',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                ),
+                subtitle: const Text(
+                  '취소/종결/이월 일정 숨김',
+                  style: TextStyle(fontSize: 11, color: AppColors.textMuted),
+                ),
+                value: validOnly,
+                activeThumbColor: AppColors.primary,
+                onChanged: (value) => setState(() => validOnly = value),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

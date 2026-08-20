@@ -60,86 +60,89 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           const SizedBox(width: 6),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 18, 16, 30),
-        children: [
-          const Text(
-            '박병준 / 대표님',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: AppColors.textStrong,
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 18, 16, 30),
+          children: [
+            const Text(
+              '박병준 / 대표님',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textStrong,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          _Field(
-            icon: Icons.phone_outlined,
-            label: '휴대전화',
-            controller: mobileController,
-          ),
-          const SizedBox(height: 12),
-          _Field(
-            icon: Icons.apartment_outlined,
-            label: '기관전화번호',
-            controller: officeController,
-          ),
-          const SizedBox(height: 12),
-          Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            child: InkWell(
-              onTap: _pickBirthDate,
+            const SizedBox(height: 20),
+            _Field(
+              icon: Icons.phone_outlined,
+              label: '휴대전화',
+              controller: mobileController,
+            ),
+            const SizedBox(height: 12),
+            _Field(
+              icon: Icons.apartment_outlined,
+              label: '기관전화번호',
+              controller: officeController,
+            ),
+            const SizedBox(height: 12),
+            Material(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(14),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 16,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.cake_outlined,
-                      color: AppColors.primaryDark,
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      '생년월일',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
+              child: InkWell(
+                onTap: _pickBirthDate,
+                borderRadius: BorderRadius.circular(14),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.cake_outlined,
+                        color: AppColors.primaryDark,
                       ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      dateText,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textBody,
+                      const SizedBox(width: 12),
+                      const Text(
+                        '생년월일',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      Text(
+                        dateText,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textBody,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          _Field(
-            icon: Icons.mail_outline_rounded,
-            label: '이메일',
-            controller: emailController,
-          ),
-          const SizedBox(height: 12),
-          _Field(
-            icon: Icons.location_on_outlined,
-            label: '주소',
-            controller: addressController,
-            maxLines: 2,
-          ),
-        ],
+            const SizedBox(height: 12),
+            _Field(
+              icon: Icons.mail_outline_rounded,
+              label: '이메일',
+              controller: emailController,
+            ),
+            const SizedBox(height: 12),
+            _Field(
+              icon: Icons.location_on_outlined,
+              label: '주소',
+              controller: addressController,
+              maxLines: 2,
+            ),
+          ],
+        ),
       ),
     );
   }

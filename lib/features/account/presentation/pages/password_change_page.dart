@@ -74,39 +74,42 @@ class _PasswordChangePageState extends State<PasswordChangePage> {
           const SizedBox(width: 6),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 22, 20, 30),
-        children: [
-          const Text(
-            '8자 이상 20자 이하로 비밀번호를 설정해주세요.\n숫자, 영문자, 특수기호(@#\$%^&+=!)가 각각 1개 이상씩 포함되어야 합니다.',
-            style: TextStyle(
-              fontSize: 12.5,
-              height: 1.6,
-              color: AppColors.textBody,
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 22, 20, 30),
+          children: [
+            const Text(
+              '8자 이상 20자 이하로 비밀번호를 설정해주세요.\n숫자, 영문자, 특수기호(@#\$%^&+=!)가 각각 1개 이상씩 포함되어야 합니다.',
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.6,
+                color: AppColors.textBody,
+              ),
             ),
-          ),
-          const SizedBox(height: 24),
-          _PasswordField(
-            label: '현재 비밀번호',
-            controller: currentController,
-            obscure: obscureCurrent,
-            onToggle: () => setState(() => obscureCurrent = !obscureCurrent),
-          ),
-          const SizedBox(height: 16),
-          _PasswordField(
-            label: '새 비밀번호',
-            controller: newController,
-            obscure: obscureNew,
-            onToggle: () => setState(() => obscureNew = !obscureNew),
-          ),
-          const SizedBox(height: 16),
-          _PasswordField(
-            label: '새 비밀번호 확인',
-            controller: confirmController,
-            obscure: obscureConfirm,
-            onToggle: () => setState(() => obscureConfirm = !obscureConfirm),
-          ),
-        ],
+            const SizedBox(height: 24),
+            _PasswordField(
+              label: '현재 비밀번호',
+              controller: currentController,
+              obscure: obscureCurrent,
+              onToggle: () => setState(() => obscureCurrent = !obscureCurrent),
+            ),
+            const SizedBox(height: 16),
+            _PasswordField(
+              label: '새 비밀번호',
+              controller: newController,
+              obscure: obscureNew,
+              onToggle: () => setState(() => obscureNew = !obscureNew),
+            ),
+            const SizedBox(height: 16),
+            _PasswordField(
+              label: '새 비밀번호 확인',
+              controller: confirmController,
+              obscure: obscureConfirm,
+              onToggle: () => setState(() => obscureConfirm = !obscureConfirm),
+            ),
+          ],
+        ),
       ),
     );
   }

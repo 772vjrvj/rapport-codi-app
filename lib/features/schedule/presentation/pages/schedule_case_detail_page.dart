@@ -70,13 +70,16 @@ class _ScheduleCaseDetailPageState extends State<ScheduleCaseDetailPage> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          _buildHero(),
-          const SizedBox(height: 14),
-          ..._buildCaseContent(context),
-        ],
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          children: [
+            _buildHero(),
+            const SizedBox(height: 14),
+            ..._buildCaseContent(context),
+          ],
+        ),
       ),
     );
   }

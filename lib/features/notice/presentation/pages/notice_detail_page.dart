@@ -15,101 +15,104 @@ class NoticeDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('공지사항')),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
-        children: [
-          _HeaderCard(notice: notice),
-          const SizedBox(height: 12),
-          Container(
-            constraints: const BoxConstraints(minHeight: 180),
-            padding: const EdgeInsets.all(18),
-            decoration: _cardDecoration(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '내용',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textMuted,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  notice.content,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    height: 1.65,
-                    color: AppColors.textStrong,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (notice.attachments.isNotEmpty) ...[
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
+          children: [
+            _HeaderCard(notice: notice),
             const SizedBox(height: 12),
             Container(
+              constraints: const BoxConstraints(minHeight: 180),
               padding: const EdgeInsets.all(18),
               decoration: _cardDecoration(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '첨부 (${notice.attachments.length})',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: AppColors.textStrong,
+                  const Text(
+                    '내용',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textMuted,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  ...notice.attachments.map(
-                    (file) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Material(
-                        color: AppColors.background,
-                        borderRadius: BorderRadius.circular(12),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('첨부파일 다운로드는 API 연결 시 적용합니다.'),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(13),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.attach_file_rounded,
-                                  color: AppColors.primary,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    file,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.textBody,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                  const SizedBox(height: 16),
+                  Text(
+                    notice.content,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.65,
+                      color: AppColors.textStrong,
                     ),
                   ),
                 ],
               ),
             ),
+            if (notice.attachments.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: _cardDecoration(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '첨부 (${notice.attachments.length})',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.textStrong,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ...notice.attachments.map(
+                      (file) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Material(
+                          color: AppColors.background,
+                          borderRadius: BorderRadius.circular(12),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('첨부파일 다운로드는 API 연결 시 적용합니다.'),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(13),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.attach_file_rounded,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      file,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.textBody,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

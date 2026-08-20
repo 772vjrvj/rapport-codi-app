@@ -62,11 +62,11 @@ class MainAppDrawer extends StatelessWidget {
   }
 
   Widget _item(
-    BuildContext context,
-    AppMenu menu,
-    IconData icon,
-    String label,
-  ) {
+      BuildContext context,
+      AppMenu menu,
+      IconData icon,
+      String label,
+      ) {
     final isSelected = selected == menu;
 
     return ListTile(

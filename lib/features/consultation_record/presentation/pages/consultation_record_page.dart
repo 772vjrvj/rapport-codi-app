@@ -46,37 +46,40 @@ class _ConsultationRecordPageState extends State<ConsultationRecordPage> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
-        children: [
-          _Summary(
-            title: widget.memberName.isEmpty
-                ? '상담/평가'
-                : '${widget.memberName} · ${widget.programName}',
-            teacher: widget.teacherName,
-            dateText: widget.dateText,
-            startTime: widget.startTime,
-            endTime: widget.endTime,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '상담/평가 내용',
-            controller: contentController,
-            emptyText: '상담 내용, 평가 결과, 보호자 전달사항 등을 입력하세요.',
-            minLines: 8,
-            fillColor: AppColors.consultationSoft,
-            focusColor: AppColors.consultation,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '메모',
-            controller: memoController,
-            emptyText: '추가 메모가 있다면 입력하세요.',
-            minLines: 4,
-            fillColor: AppColors.consultationSoft,
-            focusColor: AppColors.consultation,
-          ),
-        ],
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
+          children: [
+            _Summary(
+              title: widget.memberName.isEmpty
+                  ? '상담/평가'
+                  : '${widget.memberName} · ${widget.programName}',
+              teacher: widget.teacherName,
+              dateText: widget.dateText,
+              startTime: widget.startTime,
+              endTime: widget.endTime,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '상담/평가 내용',
+              controller: contentController,
+              emptyText: '상담 내용, 평가 결과, 보호자 전달사항 등을 입력하세요.',
+              minLines: 8,
+              fillColor: AppColors.consultationSoft,
+              focusColor: AppColors.consultation,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '메모',
+              controller: memoController,
+              emptyText: '추가 메모가 있다면 입력하세요.',
+              minLines: 4,
+              fillColor: AppColors.consultationSoft,
+              focusColor: AppColors.consultation,
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: AppPrimaryButton(
         label: '기록 저장',

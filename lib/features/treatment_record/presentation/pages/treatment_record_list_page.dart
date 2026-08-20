@@ -106,60 +106,63 @@ class _TreatmentRecordListPageState extends State<TreatmentRecordListPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          RecordFilterHeader(
-            selectedTeacher: selectedTeacherName == '전체'
-                ? '전체'
-                : '$selectedTeacherName / $selectedTeacherRole',
-            onTeacherTap: _selectTeacher,
-          ),
-          Expanded(
-            child: items.isEmpty
-                ? const Center(
-                    child: Text(
-                      '조건에 맞는 치료 기록이 없습니다.',
-                      style: TextStyle(color: AppColors.textMuted),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(12, 10, 12, 22),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final record = items[index];
-                      final showDate = index == 0 ||
-                          !_sameDate(items[index - 1].startAt, record.startAt);
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (showDate) RecordDateHeader(date: record.startAt),
-                          RecordListTile(
-                            startAt: record.startAt,
-                            endAt: record.endAt,
-                            title: '[${record.memberName}] ${record.programName}',
-                            teacher: '${record.teacherName} / ${record.teacherRole}',
-                            status: record.status,
-                            summary: record.summary,
-                            accentColor: AppColors.primary,
-                            statusBackground: record.status == '완료'
-                                ? const Color(0xFFEAF7F0)
-                                : const Color(0xFFFFF4E7),
-                            statusColor: record.status == '완료'
-                                ? const Color(0xFF438267)
-                                : const Color(0xFFC47921),
-                            onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => TreatmentRecordHistoryDetailPage(record: record),
+      body: SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            RecordFilterHeader(
+              selectedTeacher: selectedTeacherName == '전체'
+                  ? '전체'
+                  : '$selectedTeacherName / $selectedTeacherRole',
+              onTeacherTap: _selectTeacher,
+            ),
+            Expanded(
+              child: items.isEmpty
+                  ? const Center(
+                      child: Text(
+                        '조건에 맞는 치료 기록이 없습니다.',
+                        style: TextStyle(color: AppColors.textMuted),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 22),
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        final record = items[index];
+                        final showDate = index == 0 ||
+                            !_sameDate(items[index - 1].startAt, record.startAt);
+  
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (showDate) RecordDateHeader(date: record.startAt),
+                            RecordListTile(
+                              startAt: record.startAt,
+                              endAt: record.endAt,
+                              title: '[${record.memberName}] ${record.programName}',
+                              teacher: '${record.teacherName} / ${record.teacherRole}',
+                              status: record.status,
+                              summary: record.summary,
+                              accentColor: AppColors.primary,
+                              statusBackground: record.status == '완료'
+                                  ? const Color(0xFFEAF7F0)
+                                  : const Color(0xFFFFF4E7),
+                              statusColor: record.status == '완료'
+                                  ? const Color(0xFF438267)
+                                  : const Color(0xFFC47921),
+                              onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => TreatmentRecordHistoryDetailPage(record: record),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-          ),
-        ],
+                          ],
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

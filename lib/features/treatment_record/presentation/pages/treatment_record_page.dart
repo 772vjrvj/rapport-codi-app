@@ -48,45 +48,48 @@ class _TreatmentRecordPageState extends State<TreatmentRecordPage> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
-        children: [
-          _StringDateSummary(
-            title: '${widget.memberName} · ${widget.programName}',
-            teacher: widget.teacherName,
-            dateText: widget.dateText,
-            startTime: widget.startTime,
-            endTime: widget.endTime,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '상담 내용',
-            controller: counselController,
-            emptyText: '보호자 상담 내용이나 전달사항을 입력하세요.',
-            minLines: 4,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '기록 내용',
-            controller: recordController,
-            emptyText: '치료 목표, 활동, 반응 등을 기록하세요.',
-            minLines: 7,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '특이사항',
-            controller: specialController,
-            emptyText: '특이사항이 있다면 입력하세요.',
-            minLines: 4,
-          ),
-          const SizedBox(height: 14),
-          AppAttachmentCard(
-            count: 0,
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('첨부파일은 API 단계에서 연결합니다.')),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 110),
+          children: [
+            _StringDateSummary(
+              title: '${widget.memberName} · ${widget.programName}',
+              teacher: widget.teacherName,
+              dateText: widget.dateText,
+              startTime: widget.startTime,
+              endTime: widget.endTime,
             ),
-          ),
-        ],
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '상담 내용',
+              controller: counselController,
+              emptyText: '보호자 상담 내용이나 전달사항을 입력하세요.',
+              minLines: 4,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '기록 내용',
+              controller: recordController,
+              emptyText: '치료 목표, 활동, 반응 등을 기록하세요.',
+              minLines: 7,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '특이사항',
+              controller: specialController,
+              emptyText: '특이사항이 있다면 입력하세요.',
+              minLines: 4,
+            ),
+            const SizedBox(height: 14),
+            AppAttachmentCard(
+              count: 0,
+              onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('첨부파일은 API 단계에서 연결합니다.')),
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: AppPrimaryButton(
         label: '기록 저장',

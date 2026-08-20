@@ -70,37 +70,40 @@ class _TreatmentRecordHistoryDetailPageState
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
-        children: [
-          _SummaryCard(record: record),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '상담 내용',
-            controller: counselController,
-            editable: editMode,
-            emptyText: '등록된 상담 내용이 없습니다.',
-            minLines: 4,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '기록 내용',
-            controller: recordController,
-            editable: editMode,
-            emptyText: '등록된 기록 내용이 없습니다.',
-            minLines: 7,
-          ),
-          const SizedBox(height: 14),
-          AppRecordTextSection(
-            title: '특이사항',
-            controller: specialController,
-            editable: editMode,
-            emptyText: '등록된 특이사항이 없습니다.',
-            minLines: 4,
-          ),
-          const SizedBox(height: 14),
-          AppAttachmentCard(count: record.attachmentCount),
-        ],
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+          children: [
+            _SummaryCard(record: record),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '상담 내용',
+              controller: counselController,
+              editable: editMode,
+              emptyText: '등록된 상담 내용이 없습니다.',
+              minLines: 4,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '기록 내용',
+              controller: recordController,
+              editable: editMode,
+              emptyText: '등록된 기록 내용이 없습니다.',
+              minLines: 7,
+            ),
+            const SizedBox(height: 14),
+            AppRecordTextSection(
+              title: '특이사항',
+              controller: specialController,
+              editable: editMode,
+              emptyText: '등록된 특이사항이 없습니다.',
+              minLines: 4,
+            ),
+            const SizedBox(height: 14),
+            AppAttachmentCard(count: record.attachmentCount),
+          ],
+        ),
       ),
     );
   }

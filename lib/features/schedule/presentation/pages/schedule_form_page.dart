@@ -222,15 +222,18 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(top: 12, bottom: 96),
-        children: [
-          if (widget.type == ScheduleFormType.consultation)
-            _consultationGuide(),
-          _buildBasicSection(),
-          _buildScheduleSection(),
-          _buildMemoSection(),
-        ],
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.only(top: 12, bottom: 96),
+          children: [
+            if (widget.type == ScheduleFormType.consultation)
+              _consultationGuide(),
+            _buildBasicSection(),
+            _buildScheduleSection(),
+            _buildMemoSection(),
+          ],
+        ),
       ),
       bottomNavigationBar: SchedulePrimaryButton(
         label: widget.mode == ScheduleFormMode.edit ? '수정 완료' : '저장',
