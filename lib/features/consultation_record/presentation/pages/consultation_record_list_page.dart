@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../app/widgets/main_app_drawer.dart';
 import '../../../../core/widgets/record_list_widgets.dart';
+import '../../../schedule/presentation/models/schedule_ui_models.dart';
+import '../../../schedule/presentation/pages/member_select_page.dart';
+import '../../../schedule/presentation/pages/teacher_select_page.dart';
 import '../models/consultation_record_ui.dart';
 import 'consultation_record_history_detail_page.dart';
 
@@ -87,6 +90,14 @@ class _ConsultationRecordListPageState extends State<ConsultationRecordListPage>
           '상담/평가기록 관리',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
+        actions: [
+          // 기록 관리의 돋보기는 항상 이용자 선택 화면을 엽니다.
+          IconButton(
+            tooltip: '이용자 찾기',
+            onPressed: _selectMember,
+            icon: const Icon(Icons.search_rounded),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -96,6 +107,7 @@ class _ConsultationRecordListPageState extends State<ConsultationRecordListPage>
             selectedTeacher: selectedTeacher,
             searchBackground: AppColors.consultationSoft,
             onChanged: (value) => setState(() => query = value),
+            onMemberSearchTap: _selectMember,
             onClear: () {
               searchController.clear();
               setState(() => query = '');
@@ -148,15 +160,40 @@ class _ConsultationRecordListPageState extends State<ConsultationRecordListPage>
     );
   }
 
-  Future<void> _selectTeacher() async {
-    final result = await showTeacherFilterSheet(
-      context,
-      selectedTeacher: selectedTeacher,
-      teachers: const ['전체 선생님', '박병준', '최민정'],
+  /// 이용자 선택 화면에서 선택한 이름으로 기록 목록을 필터링합니다.
+  Future<void> _selectMember() async {
+    final result = await Navigator.of(context).push<MemberUi>(
+      MaterialPageRoute(
+        builder: (_) => const MemberSelectPage(),
+      ),
     );
-    if (result != null && mounted) {
-      setState(() => selectedTeacher = result);
-    }
+
+    if (result == null || !mounted) return;
+
+    searchController.text = result.name;
+    setState(() => query = result.name);
+  }
+
+  /// 아래에서 올라오는 BottomSheet 대신 기존 선생님 선택 화면을 사용합니다.
+  Future<void> _selectTeacher() async {
+    final result = await Navigator.of(context).push<TeacherUi>(
+      MaterialPageRoute(
+        builder: (_) => TeacherSelectPage(
+          selectedName: selectedTeacher == '전체 선생님'
+              ? null
+              : selectedTeacher,
+          allowAll: true,
+        ),
+      ),
+    );
+
+    if (result == null || !mounted) return;
+
+    setState(() {
+      selectedTeacher = result.id == '__ALL__'
+          ? '전체 선생님'
+          : result.name;
+    });
   }
 
   bool _sameDate(DateTime a, DateTime b) {

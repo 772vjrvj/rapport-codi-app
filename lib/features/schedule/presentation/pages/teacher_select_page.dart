@@ -6,9 +6,18 @@ import '../models/schedule_ui_models.dart';
 class TeacherSelectPage extends StatefulWidget {
   final TeacherUi? selected;
 
+  // 기록 관리 화면에서는 현재 선택된 선생님 이름만 알고 있어도
+  // 선택 표시를 할 수 있도록 별도 값으로 받을 수 있습니다.
+  final String? selectedName;
+
+  // 기록 관리 필터에서 '전체 선생님'으로 되돌릴 때 사용합니다.
+  final bool allowAll;
+
   const TeacherSelectPage({
     super.key,
     this.selected,
+    this.selectedName,
+    this.allowAll = false,
   });
 
   @override
@@ -74,6 +83,27 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
       role: '센터장님',
       color: Color(0xFFB7C7CF),
     ),
+
+    // 기록 관리 화면의 샘플 데이터와 연결 확인용 선생님입니다.
+    // TODO(API): 실제 API 연결 후 서버 응답으로 교체합니다.
+    TeacherUi(
+      id: 'T10',
+      name: '한가람',
+      role: '감통치료사',
+      color: Color(0xFFEFA7C6),
+    ),
+    TeacherUi(
+      id: 'T11',
+      name: '김유진',
+      role: '작업치료사',
+      color: Color(0xFF6C99D9),
+    ),
+    TeacherUi(
+      id: 'T12',
+      name: '최민정',
+      role: '상담사',
+      color: Color(0xFFE5A35D),
+    ),
   ];
 
   @override
@@ -97,6 +127,24 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
           '선생님 선택',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
         ),
+        actions: [
+          if (widget.allowAll)
+            TextButton(
+              onPressed: () => Navigator.pop(
+                context,
+                const TeacherUi(
+                  id: '__ALL__',
+                  name: '전체 선생님',
+                  role: '',
+                  color: Colors.transparent,
+                ),
+              ),
+              child: const Text(
+                '전체',
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ),
+        ],
       ),
       body: Column(
         children: [
@@ -128,7 +176,8 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
               separatorBuilder: (_, __) => const SizedBox(height: 7),
               itemBuilder: (context, index) {
                 final teacher = filtered[index];
-                final selected = widget.selected?.id == teacher.id;
+                final selected = widget.selected?.id == teacher.id ||
+                    widget.selectedName == teacher.name;
 
                 return Material(
                   color: Colors.white,

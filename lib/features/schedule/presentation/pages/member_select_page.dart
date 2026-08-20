@@ -77,6 +77,51 @@ class _MemberSelectPageState extends State<MemberSelectPage> {
       birthDate: '2019-03-31',
       guardianPhone: '(모) 010-3247-3937',
     ),
+
+    // 기록 관리 화면의 샘플 데이터와 연결 확인용 이용자입니다.
+    // TODO(API): 실제 API 연결 후 서버 응답으로 교체합니다.
+    MemberUi(
+      id: 'M09',
+      name: '박시우',
+      gender: '남',
+      birthDate: '2019-09-26',
+      guardianPhone: '(모) 010-5961-0500',
+    ),
+    MemberUi(
+      id: 'M10',
+      name: '박지현',
+      gender: '여',
+      birthDate: '2020-04-15',
+      guardianPhone: '(모) 010-1234-5678',
+    ),
+    MemberUi(
+      id: 'M11',
+      name: '박도윤',
+      gender: '남',
+      birthDate: '2019-09-26',
+      guardianPhone: '(모) 010-5961-0500',
+    ),
+    MemberUi(
+      id: 'M12',
+      name: '서울',
+      gender: '남',
+      birthDate: '2020-01-01',
+      guardianPhone: '(모) 010-0000-0000',
+    ),
+    MemberUi(
+      id: 'M13',
+      name: '김채은',
+      gender: '여',
+      birthDate: '2020-05-10',
+      guardianPhone: '(모) 010-0000-0000',
+    ),
+    MemberUi(
+      id: 'M14',
+      name: '김단우',
+      gender: '남',
+      birthDate: '2020-11-12',
+      guardianPhone: '(모) 010-0000-0000',
+    ),
   ];
 
   @override

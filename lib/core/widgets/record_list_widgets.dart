@@ -9,6 +9,7 @@ class RecordFilterHeader extends StatelessWidget {
   final String hintText;
   final String selectedTeacher;
   final ValueChanged<String> onChanged;
+  final VoidCallback onMemberSearchTap;
   final VoidCallback onTeacherTap;
   final VoidCallback onClear;
   final Color searchBackground;
@@ -19,6 +20,7 @@ class RecordFilterHeader extends StatelessWidget {
     required this.hintText,
     required this.selectedTeacher,
     required this.onChanged,
+    required this.onMemberSearchTap,
     required this.onTeacherTap,
     required this.onClear,
     this.searchBackground = AppColors.primary50,
@@ -36,7 +38,12 @@ class RecordFilterHeader extends StatelessWidget {
             onChanged: onChanged,
             decoration: InputDecoration(
               hintText: hintText,
-              prefixIcon: const Icon(Icons.search_rounded),
+              // 돋보기는 기록 텍스트 검색이 아니라 이용자 선택 화면을 엽니다.
+              prefixIcon: IconButton(
+                tooltip: '이용자 찾기',
+                onPressed: onMemberSearchTap,
+                icon: const Icon(Icons.search_rounded),
+              ),
               suffixIcon: controller.text.isEmpty
                   ? null
                   : IconButton(
@@ -284,44 +291,4 @@ class RecordListTile extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<String?> showTeacherFilterSheet(
-  BuildContext context, {
-  required String selectedTeacher,
-  required List<String> teachers,
-}) {
-  return showModalBottomSheet<String>(
-    context: context,
-    useSafeArea: true,
-    builder: (context) => Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 18),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const ListTile(
-            title: Text(
-              '선생님 선택',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w900),
-            ),
-          ),
-          ...teachers.map(
-            (teacher) => ListTile(
-              title: Text(
-                teacher,
-                style: const TextStyle(fontWeight: FontWeight.w700),
-              ),
-              trailing: teacher == selectedTeacher
-                  ? const Icon(
-                      Icons.check_circle_rounded,
-                      color: AppColors.primary,
-                    )
-                  : null,
-              onTap: () => Navigator.pop(context, teacher),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }
