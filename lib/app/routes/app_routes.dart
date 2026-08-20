@@ -9,5 +9,4 @@ abstract final class AppRoutes {
   static const String notices = '/notices';
   static const String support = '/support';
   static const String account = '/account';
-  static const String settings = '/settings';
 }

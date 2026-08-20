@@ -4,9 +4,11 @@ import '../../../../app/theme/app_theme.dart';
 import '../../../../app/widgets/main_app_drawer.dart';
 import '../../../../core/utils/date_time_utils.dart';
 import '../models/schedule_detail_ui.dart';
+import '../models/schedule_search_filter.dart';
 import '../widgets/schedule_type_sheet.dart';
 import 'notification_list_page.dart';
 import 'schedule_case_detail_page.dart';
+import 'schedule_search_tool_page.dart';
 
 class MainSchedulePage extends StatefulWidget {
   const MainSchedulePage({super.key});
@@ -22,6 +24,7 @@ class _MainSchedulePageState extends State<MainSchedulePage>
   int year = 2026;
   int month = 8;
   int selectedDay = 19;
+  ScheduleSearchFilter scheduleFilter = const ScheduleSearchFilter();
 
 
   @override
@@ -71,8 +74,23 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             ),
           ),
           IconButton(
-            onPressed: () => _showComingSoon('검색'),
-            icon: const Icon(Icons.search_rounded),
+            tooltip: '검색 도구',
+            onPressed: _openSearchTool,
+            icon: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const Icon(Icons.filter_alt_outlined),
+                if (!scheduleFilter.isDefault)
+                  const Positioned(
+                    right: -2,
+                    top: -2,
+                    child: CircleAvatar(
+                      radius: 4,
+                      backgroundColor: Color(0xFFE96A77),
+                    ),
+                  ),
+              ],
+            ),
           ),
           const SizedBox(width: 2),
         ],
@@ -302,7 +320,14 @@ class _MainSchedulePageState extends State<MainSchedulePage>
       padding: const EdgeInsets.fromLTRB(12, 1, 12, 14),
       physics: const BouncingScrollPhysics(),
       children: [
-        _ScheduleItem(
+        if (_showSchedule(
+          kind: ScheduleDetailKind.treatment,
+          teacherName: '서유나',
+          memberName: '김루아',
+          programName: '언어치료',
+          status: '완료',
+        ))
+          _ScheduleItem(
           '10:00',
           '10:40',
           '김루아',
@@ -330,7 +355,14 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             ),
           ),
         ),
-        _ScheduleItem(
+        if (_showSchedule(
+          kind: ScheduleDetailKind.treatment,
+          teacherName: '김유진',
+          memberName: '박도윤',
+          programName: '감각통합',
+          status: '예정',
+        ))
+          _ScheduleItem(
           '11:00',
           '11:50',
           '박도윤',
@@ -357,7 +389,14 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             ),
           ),
         ),
-        _ScheduleItem(
+        if (_showSchedule(
+          kind: ScheduleDetailKind.consultation,
+          teacherName: '최민정',
+          memberName: '이서아',
+          programName: '초기상담',
+          status: '예정',
+        ))
+          _ScheduleItem(
           '13:30',
           '14:10',
           '이서아',
@@ -385,7 +424,15 @@ class _MainSchedulePageState extends State<MainSchedulePage>
             ),
           ),
         ),
-        _ScheduleItem(
+        if (_showSchedule(
+          kind: ScheduleDetailKind.other,
+          teacherName: '박병준',
+          memberName: '',
+          programName: '기타',
+          status: '예정',
+          centerShared: true,
+        ))
+          _ScheduleItem(
           '15:00',
           '15:40',
           '센터회의',
@@ -435,6 +482,46 @@ class _MainSchedulePageState extends State<MainSchedulePage>
         ),
       ],
     );
+  }
+
+  bool _showSchedule({
+    required ScheduleDetailKind kind,
+    required String teacherName,
+    required String memberName,
+    required String programName,
+    required String status,
+    bool centerShared = false,
+  }) {
+    if (scheduleFilter.teacherNames.isNotEmpty &&
+        !scheduleFilter.teacherNames.contains(teacherName)) {
+      return false;
+    }
+
+    if (scheduleFilter.member != null &&
+        scheduleFilter.member!.name != memberName) {
+      return false;
+    }
+
+    if (scheduleFilter.program != null &&
+        !programName.contains(scheduleFilter.program!.name)) {
+      return false;
+    }
+
+    if (scheduleFilter.validOnly &&
+        const {'취소', '종결', '이월'}.contains(status)) {
+      return false;
+    }
+
+    final searchKind = centerShared
+        ? ScheduleSearchKind.centerShared
+        : switch (kind) {
+            ScheduleDetailKind.treatment => ScheduleSearchKind.treatment,
+            ScheduleDetailKind.consultation => ScheduleSearchKind.consultation,
+            ScheduleDetailKind.other => ScheduleSearchKind.other,
+            ScheduleDetailKind.notice => null,
+          };
+
+    return searchKind == null || scheduleFilter.kinds.contains(searchKind);
   }
 
   void _openScheduleDetail(ScheduleListDetailData data) {
@@ -541,12 +628,6 @@ class _MainSchedulePageState extends State<MainSchedulePage>
       month = now.month;
       selectedDay = now.day;
     });
-  }
-
-  void _showComingSoon(String featureName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$featureName 기능은 다음 단계에서 연결합니다.')),
-    );
   }
 
   Future<void> _openYearMonthPicker() async {
@@ -741,6 +822,19 @@ class _MainSchedulePageState extends State<MainSchedulePage>
       });
     }
   }
+  Future<void> _openSearchTool() async {
+    final result = await Navigator.push<ScheduleSearchFilter>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ScheduleSearchToolPage(initial: scheduleFilter),
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() => scheduleFilter = result);
+    }
+  }
+
   void _openNotifications() {
     Navigator.of(context).push(
       MaterialPageRoute(

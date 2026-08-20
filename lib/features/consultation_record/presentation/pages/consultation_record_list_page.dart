@@ -63,7 +63,8 @@ class _ConsultationRecordListPageState extends State<ConsultationRecordListPage>
 
   List<ConsultationRecordHistoryUi> get filteredRecords {
     return records.where((record) {
-      final matchesTeacher = record.teacherName == selectedTeacherName;
+      final matchesTeacher = selectedTeacherName == '전체' ||
+          record.teacherName == selectedTeacherName;
       final matchesMember = selectedMemberName == null ||
           record.memberName == selectedMemberName;
       return matchesTeacher && matchesMember;
@@ -93,7 +94,9 @@ class _ConsultationRecordListPageState extends State<ConsultationRecordListPage>
       body: Column(
         children: [
           RecordFilterHeader(
-            selectedTeacher: '$selectedTeacherName / $selectedTeacherRole',
+            selectedTeacher: selectedTeacherName == '전체'
+                ? '전체'
+                : '$selectedTeacherName / $selectedTeacherRole',
             onTeacherTap: _selectTeacher,
           ),
           Expanded(
@@ -169,7 +172,7 @@ class _ConsultationRecordListPageState extends State<ConsultationRecordListPage>
 
     setState(() {
       selectedTeacherName = result.name;
-      selectedTeacherRole = result.role;
+      selectedTeacherRole = result.id == 'ALL' ? '' : result.role;
     });
   }
 

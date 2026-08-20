@@ -27,6 +27,12 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
   // TODO(API): 추후 서버에서 받은 선생님 목록으로 교체합니다.
   static const teachers = [
     TeacherUi(
+      id: 'ALL',
+      name: '전체',
+      role: '',
+      color: Color(0xFFB7C7CF),
+    ),
+    TeacherUi(
       id: 'T01',
       name: '박병준',
       role: '대표님',
@@ -221,7 +227,7 @@ class _TeacherSelectPageState extends State<TeacherSelectPage> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              teacher.displayName,
+                              teacher.id == 'ALL' ? '전체' : teacher.displayName,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: selected

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../models/member_ui.dart';
 import 'member_form_page.dart';
+import 'member_treatment_status_page.dart';
 
 class MemberDetailPage extends StatefulWidget {
   final MemberUi member;
@@ -69,11 +70,11 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
             child: InkWell(
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('치료현황 화면은 다음 단계에서 연결합니다.')),
-                );
-              },
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => MemberTreatmentStatusPage(member: _member),
+                ),
+              ),
               borderRadius: BorderRadius.circular(18),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 17),
@@ -121,10 +122,14 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       ),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 31,
             backgroundColor: AppColors.primary100,
-            child: Icon(Icons.child_care_rounded, color: AppColors.primaryDark, size: 31),
+            child: Icon(
+              _member.gender == '여' ? Icons.girl_rounded : Icons.boy_rounded,
+              color: AppColors.primaryDark,
+              size: 34,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(

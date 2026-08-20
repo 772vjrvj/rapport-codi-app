@@ -11,7 +11,6 @@ enum AppMenu {
   notices,
   support,
   account,
-  settings,
 }
 
 /// 모든 최상위 화면에서 같이 사용하는 Drawer입니다.
@@ -43,7 +42,7 @@ class MainAppDrawer extends StatelessWidget {
                   _item(context, AppMenu.consultationRecords, Icons.chat_bubble_outline, '상담/평가기록 관리'),
                   _item(context, AppMenu.members, Icons.child_care_outlined, '이용자 관리'),
                   _item(context, AppMenu.notices, Icons.campaign_outlined, '공지사항'),
-                  _item(context, AppMenu.support, Icons.support_agent_outlined, '서비스지원'),
+                  _item(context, AppMenu.support, Icons.support_agent_outlined, '서비스 지원'),
                 ],
               ),
             ),
@@ -53,7 +52,6 @@ class MainAppDrawer extends StatelessWidget {
               child: Column(
                 children: [
                   _item(context, AppMenu.account, Icons.account_circle_outlined, '나의 계정'),
-                  _item(context, AppMenu.settings, Icons.settings_outlined, '설정'),
                 ],
               ),
             ),
@@ -107,7 +105,6 @@ class MainAppDrawer extends StatelessWidget {
       AppMenu.notices => AppRoutes.notices,
       AppMenu.support => AppRoutes.support,
       AppMenu.account => AppRoutes.account,
-      AppMenu.settings => AppRoutes.settings,
     };
   }
 }

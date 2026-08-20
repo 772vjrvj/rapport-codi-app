@@ -44,7 +44,7 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.forward();
 
-    Timer(const Duration(milliseconds: 1600), () {
+    Timer(const Duration(milliseconds: 3000), () {
       if (!mounted) return;
 
       Navigator.of(context).pushReplacementNamed(AppRoutes.login);
