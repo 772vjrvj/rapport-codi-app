@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/services/local_notification_service.dart';
 import '../features/account/presentation/pages/account_page.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
@@ -12,7 +13,6 @@ import '../features/treatment_record/presentation/pages/treatment_record_list_pa
 import '../features/teacher_comment/presentation/pages/teacher_comment_list_page.dart';
 import '../features/parent_together/presentation/pages/parent_together_page.dart';
 import '../features/child_info/presentation/pages/child_info_feed_page.dart';
-import '../core/services/local_notification_service.dart';
 import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
 

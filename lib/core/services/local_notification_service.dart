@@ -10,10 +10,10 @@ import '../../features/schedule/presentation/pages/schedule_case_detail_page.dar
 
 abstract final class LocalNotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   static final GlobalKey<NavigatorState> navigatorKey =
-  GlobalKey<NavigatorState>();
+      GlobalKey<NavigatorState>();
 
   static Timer? _loginTestTimer;
 
@@ -34,7 +34,7 @@ abstract final class LocalNotificationService {
     );
 
     final launchDetails =
-    await _plugin.getNotificationAppLaunchDetails();
+        await _plugin.getNotificationAppLaunchDetails();
 
     if (launchDetails?.didNotificationLaunchApp ?? false) {
       final payload =
@@ -49,13 +49,13 @@ abstract final class LocalNotificationService {
   static Future<void> requestPermission() async {
     await _plugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
   }
 
   static void _onNotificationResponse(
-      NotificationResponse response,
-      ) {
+    NotificationResponse response,
+  ) {
     final payload = response.payload;
 
     if (payload == null || payload.isEmpty) {
@@ -84,9 +84,9 @@ abstract final class LocalNotificationService {
   }
 
   static void _openFromPayload(
-      String payload, {
-        required bool fromTerminated,
-      }) {
+    String payload, {
+    required bool fromTerminated,
+  }) {
     try {
       final json = jsonDecode(payload);
 
@@ -115,9 +115,9 @@ abstract final class LocalNotificationService {
   }
 
   static void _openSchedule(
-      String targetId, {
-        required bool fromTerminated,
-      }) {
+    String targetId, {
+    required bool fromTerminated,
+  }) {
     final navigator = navigatorKey.currentState;
 
     if (navigator == null) {
@@ -136,7 +136,7 @@ abstract final class LocalNotificationService {
     if (fromTerminated) {
       navigator.pushNamedAndRemoveUntil(
         AppRoutes.schedule,
-            (route) => false,
+        (route) => false,
       );
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -168,8 +168,8 @@ abstract final class LocalNotificationService {
   }
 
   static ScheduleListDetailData? _findTestSchedule(
-      String targetId,
-      ) {
+    String targetId,
+  ) {
     switch (targetId) {
       case 'TEST_SCHEDULE_001':
         return const ScheduleListDetailData(
@@ -198,29 +198,29 @@ abstract final class LocalNotificationService {
 
     _loginTestTimer =
         Timer(const Duration(minutes: 1), () async {
-          const details = NotificationDetails(
-            android: AndroidNotificationDetails(
-              'rapport_codi_test',
-              '라포코디 테스트 알림',
-              channelDescription:
+      const details = NotificationDetails(
+        android: AndroidNotificationDetails(
+          'rapport_codi_test',
+          '라포코디 테스트 알림',
+          channelDescription:
               '로그인 후 알림 동작을 확인하기 위한 테스트 채널입니다.',
-              importance: Importance.high,
-              priority: Priority.high,
-            ),
-          );
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+      );
 
-          final payload = jsonEncode({
-            'type': 'schedule',
-            'targetId': 'TEST_SCHEDULE_001',
-          });
+      final payload = jsonEncode({
+        'type': 'schedule',
+        'targetId': 'TEST_SCHEDULE_001',
+      });
 
-          await _plugin.show(
-            id: 1001,
-            title: '라포코디',
-            body: '민준이의 새로운 소식을 확인해보세요.',
-            notificationDetails: details,
-            payload: payload,
-          );
-        });
+      await _plugin.show(
+        id: 1001,
+        title: '라포코디',
+        body: '민준이의 새로운 소식을 확인해보세요.',
+        notificationDetails: details,
+        payload: payload,
+      );
+    });
   }
 }
