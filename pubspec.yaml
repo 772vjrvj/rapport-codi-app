@@ -8,34 +8,27 @@ version: 1.0.0+1
 environment:
   sdk: ^3.13.0
 
-
 dependencies:
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
   http: ^1.6.0
-
-  # 로컬 알림
   flutter_local_notifications: ^22.3.0
-
-  # 외부 링크 열기
   url_launcher: ^6.3.2
 
-# 앱 아이콘 설정
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
 flutter_launcher_icons:
   android: true
   ios: true
-
-  # 기본 앱 아이콘
   image_path: "assets/images/app_icon.png"
 
-  # Android Adaptive Icon
-  adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/images/app_icon_foreground.png"
-
-  # Android 13+ 테마 아이콘
-  adaptive_icon_monochrome: "assets/images/app_icon_monochrome.png"
 
 flutter:
   uses-material-design: true
