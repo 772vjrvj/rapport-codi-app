@@ -5,6 +5,7 @@ import '../../../../core/utils/date_time_utils.dart';
 import '../../../consultation_record/presentation/pages/consultation_record_page.dart';
 import '../../../treatment/presentation/pages/monthly_treatment_management_page.dart';
 import '../../../treatment_record/presentation/pages/treatment_record_page.dart';
+import '../../../teacher_comment/presentation/pages/teacher_comment_page.dart';
 
 import '../models/schedule_detail_ui.dart';
 import '../models/schedule_ui_models.dart';
@@ -251,13 +252,24 @@ class _ScheduleCaseDetailPageState extends State<ScheduleCaseDetailPage> {
       const SizedBox(height: 14),
       _scheduleCard(),
       const SizedBox(height: 14),
-      _DetailCard(
-        title: '메모',
-        children: [
-          _TextBlock(
-            text: data.memo.isEmpty ? '등록된 메모가 없습니다.' : data.memo,
-          ),
-        ],
+      _ActionCard(
+        icon: Icons.chat_bubble_outline_rounded,
+        title: '선생님 코멘트',
+        subtitle: '부모님께 전달할 오늘의 코멘트를 작성합니다.',
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => TeacherCommentPage(
+                memberName: data.memberName,
+                programName: data.programName,
+                teacherName: data.teacherName,
+                dateText: data.dateText,
+                startTime: data.startTime,
+                endTime: data.endTime,
+              ),
+            ),
+          );
+        },
       ),
       const SizedBox(height: 14),
       _ActionCard(
@@ -513,7 +525,7 @@ class _ScheduleCaseDetailPageState extends State<ScheduleCaseDetailPage> {
       start: start,
       end: end,
       repeatText: data.repeatText,
-      memo: data.memo,
+      memo: data.kind == ScheduleDetailKind.treatment ? '' : data.memo,
       title: data.title,
       centerShared: data.centerShared,
       allDay: data.allDay,
@@ -548,7 +560,9 @@ class _ScheduleCaseDetailPageState extends State<ScheduleCaseDetailPage> {
         endTime: AppDateTime.time(result.end),
         memo: result.type == ScheduleFormType.consultation
             ? result.consultationReason
-            : result.memo,
+            : result.type == ScheduleFormType.treatment
+                ? ''
+                : result.memo,
         repeatText: result.repeatText,
         allDay: result.allDay,
         centerShared: result.centerShared,

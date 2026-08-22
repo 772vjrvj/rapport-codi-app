@@ -8,6 +8,7 @@ version: 1.0.0+1
 environment:
   sdk: ^3.13.0
 
+
 dependencies:
   flutter:
     sdk: flutter
@@ -15,14 +16,11 @@ dependencies:
   cupertino_icons: ^1.0.8
   http: ^1.6.0
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  # 로컬 알림
+  flutter_local_notifications: ^22.3.0
 
-  flutter_lints: ^6.0.0
-
-  # 앱 아이콘 생성 패키지
-  flutter_launcher_icons: ^0.14.4
+  # 외부 링크 열기
+  url_launcher: ^6.3.2
 
 # 앱 아이콘 설정
 flutter_launcher_icons:

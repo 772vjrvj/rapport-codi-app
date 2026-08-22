@@ -9,6 +9,9 @@ import '../features/notice/presentation/pages/notice_list_page.dart';
 import '../features/schedule/presentation/pages/main_schedule_page.dart';
 import '../features/support/presentation/pages/support_page.dart';
 import '../features/treatment_record/presentation/pages/treatment_record_list_page.dart';
+import '../features/teacher_comment/presentation/pages/teacher_comment_list_page.dart';
+import '../features/parent_together/presentation/pages/parent_together_page.dart';
+import '../features/child_info/presentation/pages/child_info_feed_page.dart';
 import 'routes/app_routes.dart';
 import 'theme/app_theme.dart';
 
@@ -26,6 +29,9 @@ class RapportCodiApp extends StatelessWidget {
         AppRoutes.login: (_) => const LoginPage(),
         AppRoutes.schedule: (_) => const MainSchedulePage(),
         AppRoutes.treatmentRecords: (_) => const TreatmentRecordListPage(),
+        AppRoutes.teacherComments: (_) => const TeacherCommentListPage(),
+        AppRoutes.parentTogether: (_) => const ParentTogetherPage(),
+        AppRoutes.childInfo: (_) => const ChildInfoFeedPage(),
         AppRoutes.consultationRecords: (_) => const ConsultationRecordListPage(),
         AppRoutes.members: (_) => const MemberListPage(),
         AppRoutes.notices: (_) => const NoticeListPage(),

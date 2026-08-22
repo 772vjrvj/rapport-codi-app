@@ -199,7 +199,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       start: start,
       end: end,
       repeatText: repeatText,
-      memo: memoController.text.trim(),
+      memo: widget.type == ScheduleFormType.treatment
+          ? ''
+          : memoController.text.trim(),
       title: titleController.text.trim(),
       centerShared: centerShared,
       allDay: allDay,
@@ -231,7 +233,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
               _consultationGuide(),
             _buildBasicSection(),
             _buildScheduleSection(),
-            _buildMemoSection(),
+            if (widget.type != ScheduleFormType.treatment)
+              _buildMemoSection(),
           ],
         ),
       ),

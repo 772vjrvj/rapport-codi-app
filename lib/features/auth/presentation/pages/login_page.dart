@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/theme/app_theme.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../../core/services/local_notification_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,7 +22,11 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
+    await LocalNotificationService.requestPermission();
+    LocalNotificationService.scheduleLoginTestNotification();
+
+    if (!mounted) return;
     Navigator.of(context).pushNamedAndRemoveUntil(
       AppRoutes.schedule,
       (route) => false,

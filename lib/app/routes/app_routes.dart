@@ -4,6 +4,9 @@ abstract final class AppRoutes {
   static const String login = '/login';
   static const String schedule = '/schedule';
   static const String treatmentRecords = '/treatment-records';
+  static const String teacherComments = '/teacher-comments';
+  static const String parentTogether = '/parent-together';
+  static const String childInfo = '/child-info';
   static const String consultationRecords = '/consultation-records';
   static const String members = '/members';
   static const String notices = '/notices';
