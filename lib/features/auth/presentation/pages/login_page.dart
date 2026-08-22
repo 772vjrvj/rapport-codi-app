@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/theme/app_theme.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../../app/theme/app_theme.dart';
+import '../../../../core/network/api_exception.dart';
 import '../../../../core/services/local_notification_service.dart';
+import '../../../../core/widgets/kid_loading.dart';
+import '../../data/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +18,10 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  final AuthService _authService = AuthService.instance;
+
+  bool _loading = false;
+
   @override
   void dispose() {
     usernameController.dispose();
@@ -23,14 +30,56 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    await LocalNotificationService.requestPermission();
-    LocalNotificationService.scheduleLoginTestNotification();
+    if (_loading) return;
 
-    if (!mounted) return;
-    Navigator.of(context).pushNamedAndRemoveUntil(
-      AppRoutes.schedule,
-      (route) => false,
-    );
+    final loginId = usernameController.text.trim();
+    final password = passwordController.text;
+
+    if (loginId.isEmpty) {
+      _showMessage('아이디를 입력해주세요.');
+      return;
+    }
+
+    if (password.isEmpty) {
+      _showMessage('비밀번호를 입력해주세요.');
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      await _authService.login(
+        loginId: loginId,
+        password: password,
+      );
+
+      // 기존 알림 권한 테스트 흐름 유지
+      await LocalNotificationService.requestPermission();
+      LocalNotificationService.scheduleLoginTestNotification();
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.schedule,
+        (route) => false,
+      );
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      _showMessage(e.message);
+    } catch (_) {
+      if (!mounted) return;
+      _showMessage('로그인 중 오류가 발생했습니다.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
   }
 
   void _findPassword() {
@@ -41,88 +90,110 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 12),
-                  Image.asset(
-                    'assets/images/brand-icon.png',
-                    height: 108,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(height: 10),
-                  const Center(
-                    child: _BrandText(fontSize: 23),
-                  ),
-                  const SizedBox(height: 42),
-                  TextField(
-                    controller: usernameController,
-                    autofocus: true,
-                    textInputAction: TextInputAction.next,
-                    decoration: _inputDecoration(
-                      hintText: '아이디를 입력하세요',
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => _login(),
-                    decoration: _inputDecoration(
-                      hintText: '비밀번호를 입력하세요',
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 50,
-                    child: FilledButton(
-                      onPressed: _login,
-                      style: FilledButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 420),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 12),
+                      Image.asset(
+                        'assets/images/brand-icon.png',
+                        height: 108,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(height: 10),
+                      const Center(
+                        child: _BrandText(fontSize: 23),
+                      ),
+                      const SizedBox(height: 42),
+                      TextField(
+                        controller: usernameController,
+                        autofocus: true,
+                        enabled: !_loading,
+                        textInputAction: TextInputAction.next,
+                        decoration: _inputDecoration(
+                          hintText: '아이디를 입력하세요',
                         ),
                       ),
-                      child: const Text(
-                        '로그인',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w900,
+                      const SizedBox(height: 14),
+                      TextField(
+                        controller: passwordController,
+                        enabled: !_loading,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _login(),
+                        decoration: _inputDecoration(
+                          hintText: '비밀번호를 입력하세요',
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: _findPassword,
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.textMuted,
-                    ),
-                    child: const Text(
-                      '비밀번호 찾기',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        height: 50,
+                        child: FilledButton(
+                          onPressed: _loading ? null : _login,
+                          style: FilledButton.styleFrom(
+                            elevation: 0,
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: _loading
+                              ? const KidLoading(
+                                  compact: true,
+                                )
+                              : const Text(
+                                  '로그인',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: _loading ? null : _findPassword,
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.textMuted,
+                        ),
+                        child: const Text(
+                          '비밀번호 찾기',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+          if (_loading)
+            const KidLoadingOverlay(
+              message: '로그인하고 있어요',
+            ),
+        ],
       ),
     );
   }
@@ -153,6 +224,12 @@ class _LoginPageState extends State<LoginPage> {
         borderSide: const BorderSide(
           color: AppColors.primary,
           width: 1.5,
+        ),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(
+          color: AppColors.border,
         ),
       ),
     );

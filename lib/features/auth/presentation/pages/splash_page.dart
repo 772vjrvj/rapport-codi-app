@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
-import '../../../../app/theme/app_theme.dart';
 import '../../../../app/routes/app_routes.dart';
+import '../../../../core/widgets/kid_loading.dart';
+import '../../data/auth_service.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -17,6 +16,8 @@ class _SplashPageState extends State<SplashPage>
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
+
+  final AuthService _authService = AuthService.instance;
 
   @override
   void initState() {
@@ -44,11 +45,25 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.forward();
 
-    Timer(const Duration(milliseconds: 3000), () {
-      if (!mounted) return;
+    _checkLogin();
+  }
 
-      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
-    });
+  Future<void> _checkLogin() async {
+    // 스플래시 로고가 너무 빨리 사라지지 않도록 최소 노출시간을 둔다.
+    final results = await Future.wait<dynamic>([
+      _authService.tryAutoLogin(),
+      Future<void>.delayed(
+        const Duration(milliseconds: 1800),
+      ),
+    ]);
+
+    final loggedIn = results.first as bool;
+
+    if (!mounted) return;
+
+    Navigator.of(context).pushReplacementNamed(
+      loggedIn ? AppRoutes.schedule : AppRoutes.login,
+    );
   }
 
   @override
@@ -76,6 +91,10 @@ class _SplashPageState extends State<SplashPage>
                 ),
                 const SizedBox(height: 18),
                 const _BrandText(fontSize: 30),
+                const SizedBox(height: 32),
+                const KidLoading(
+                  compact: true,
+                ),
               ],
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_theme.dart';
 import '../../../../app/widgets/main_app_drawer.dart';
+import '../../../auth/data/auth_service.dart';
 import 'password_change_page.dart';
 import 'profile_edit_page.dart';
 
@@ -194,7 +195,16 @@ class _AccountPageState extends State<AccountPage> {
     );
 
     if (logout != true || !context.mounted) return;
-    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+
+    await AuthService.instance.logout();
+
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+          (_) => false,
+    );
   }
 }
 

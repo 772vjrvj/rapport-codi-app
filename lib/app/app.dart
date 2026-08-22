@@ -34,7 +34,8 @@ class RapportCodiApp extends StatelessWidget {
         AppRoutes.teacherComments: (_) => const TeacherCommentListPage(),
         AppRoutes.parentTogether: (_) => const ParentTogetherPage(),
         AppRoutes.childInfo: (_) => const ChildInfoFeedPage(),
-        AppRoutes.consultationRecords: (_) => const ConsultationRecordListPage(),
+        AppRoutes.consultationRecords: (_) =>
+            const ConsultationRecordListPage(),
         AppRoutes.members: (_) => const MemberListPage(),
         AppRoutes.notices: (_) => const NoticeListPage(),
         AppRoutes.support: (_) => const SupportPage(),
